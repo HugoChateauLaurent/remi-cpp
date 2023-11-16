@@ -137,10 +137,6 @@ void NewProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 
     float* start = buffer.getWritePointer(0); // get the pointer to the first sample of the first channel
     int size = buffer.getNumSamples();
-    //std::vector<float> vect_buffer(start, start + size);
-    Eigen::VectorXd vect_buffer(start, start + size);
-
-    // juce::dsp::AudioBlock<float> block(buffer);
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -153,8 +149,6 @@ void NewProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         Reservoir.forward(start, start + size,
             size);
     }
-        // buffer.clear (i, 0, buffer.getNumSamples());
-    //juce::AudioBuffer<float> buffer(start, vect_buffer.data());
 
 
     // This is the place where you'd normally do the guts of your plugin's
