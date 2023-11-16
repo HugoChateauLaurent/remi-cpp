@@ -11,53 +11,75 @@
 #include "Reservoir.h"
 
 #include <iostream>
-#include <Eigen/Dense>
 #include <random>
 
 
-Eigen::MatrixXd W;          // Reservoir matrix
-Eigen::VectorXd state;      // Reservoir state
-std::default_random_engine generator; // Random number generator
-std::normal_distribution<double> distribution; // Normal distribution for noise
-
-Reservoir::Reservoir() {
-
-}
-
 void Reservoir::initialize() {
     // Set seed for random number generation
-    generator.seed(seed);
+    Reservoir::generator.seed(seed);
 
     // Initialize W with your connectivity pattern
-    W = Eigen::MatrixXd::Random(units, units);
-    W = rc_connectivity * W / W.norm(); // Normalize to achieve the desired connectivity
+    W.resize(units, std::vector<double>(units));
+    for (int i = 0; i < units; ++i) {
+        for (int j = 0; j < units; ++j) {
+            W[i][j] = rc_connectivity * ((double)rand() / RAND_MAX - 0.5); // normal
+        }
+    }
+
+    // Normalize to achieve the desired connectivity
+    double norm = 0.0;
+    for (int i = 0; i < units; ++i) {
+        for (int j = 0; j < units; ++j) {
+            norm += W[i][j] * W[i][j];
+        }
+    }
+    norm = sqrt(norm);
+    if (norm > 0.0) {
+        for (int i = 0; i < units; ++i) {
+            for (int j = 0; j < units; ++j) {
+                W[i][j] /= norm;
+            }
+        }
+    }
 
     // Initialize state to zeros
-    state.setZero();
+    state.resize(units, 0.0);
 }
 
-void Reservoir::forward(float* startRead, float* startWrite, int size) {
-    Eigen::VectorXd x(startRead, startRead + size);
+void Reservoir::forward(const float* startRead, float* startWrite, int size) {
+    std::vector<double> x(size);
+    for (int i = 0; i < size; ++i) {
+        x[i] = startRead[i];
+    }
+
     // Apply input scaling
-    x *= input_scaling;
+    for (double& val : x) {
+        val *= input_scaling;
+    }
 
     // Update reservoir state
-    Eigen::VectorXd prod = W * state;
-    Eigen::VectorXd s_next = (1 - lr) * state + lr * prod + noise_rc * noise_gen(state.size());
-    state = s_next;
-        
-    // convert s_next to startWrite - sample per sample
-    for (int i = 0; i < size; ++i) {
-        startWrite[i] = s_next[i];
+    std::vector<double> prod(units, 0.0);
+    for (int i = 0; i < units; ++i) {
+        for (int j = 0; j < units; ++j) {
+            prod[i] += W[i][j] * state[j];
+        }
     }
+    std::vector<double> s_next(units, 0.0);
+    for (int i = 0; i < units; ++i) {
+        s_next[i] = (1 - lr) * state[i] + lr * prod[i] + noise_rc * distribution(generator); // normal noise - tanh(prod + b) - biais bernoulli
+    }
+    state = s_next;
 
-    //return s_next;
+    // Convert s_next to startWrite - sample per sample
+    for (int i = 0; i < size; ++i) {
+        startWrite[i] = static_cast<float>(s_next[i]);
+    }
 }
 
-Eigen::VectorXd Reservoir::noise_gen(int size) {
-    Eigen::VectorXd noise(size);
+std::vector<double> Reservoir::noise_gen(int size) { // noise gen
+    std::vector<double> noise(size);
     for (int i = 0; i < size; ++i) {
-        noise[i] = distribution(generator);
+        noise[i] = distribution(generator); 
     }
     return noise;
-};
+}

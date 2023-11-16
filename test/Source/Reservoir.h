@@ -14,32 +14,29 @@
 #include <eigen3/Eigen/Dense>
 #include <random>
 
-class Reservoir
-{
+
+class Reservoir {
 public:
-    Reservoir();
-    //Reservoir(int units, float lr, float sr, float noise_rc, float input_scaling, float rc_connectivity, int seed);
+    Reservoir() = default;
+    virtual ~Reservoir() = default;
+    int units;
+    float lr = 1.0;
+    float sr = 1.0;
+    float noise_rc = 0.0;
+    float input_scaling = 1.0;
+    double rc_connectivity = 0.1;
+    int seed = 0;
+
+    std::vector<std::vector<double>> W;          // Reservoir matrix
+    std::vector<double> state;                   // Reservoir state
+    std::default_random_engine generator;        // Random number generator
+    std::normal_distribution<double> distribution; // Normal distribution for noise
 
     void initialize();
-    void forward(float* startRead, float* startWrite, int size);
-    Eigen::VectorXd noise_gen(int size);
+    void forward(const float* startRead, float* startWrite, int size);
+    std::vector<double> noise_gen(int size);
 
-    int units;
-    float lr = 1.0; 
-    float sr = 1.0; 
-    float noise_rc = 0.0; 
-    float input_scaling = 1.0;
-    double rc_connectivity = 0.1; 
-    int seed = 0;
-    /*int units;           // Number of neurons.
-    float lr;            // Leaking rate (1.0 by default)
-    float sr;            // Spectral Radius (1.0 by default).
-    float noise_rc;      // Reservoir state noise gain (0 by default).
-    float input_scaling; // Input scaling (1.0 by default).
-    float rc_connectivity; // Connectivity (or density) of ``W`` (0.1 by default).
-    int seed;            // Seed for random number generation.*/
-
-
-// private:
+//private:
     
 };
+
