@@ -11,20 +11,35 @@
 #pragma once
 
 #include <iostream>
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 #include <random>
 
 class Reservoir
 {
 public:
-    Reservoir() = default;
+    Reservoir();
+    //Reservoir(int units, float lr, float sr, float noise_rc, float input_scaling, float rc_connectivity, int seed);
 
     void initialize();
-    VectorXd forward(VectorXd x);
-    VectorXd noise_gen(int size); 
+    void forward(float* startRead, float* startWrite, int size);
+    std::vector<float> noise_gen(int size);
 
-    void process(const float* inData, float* outData, int numSamples);
-    // void process(const float* inData, float param1, float param2, float* outData, int numSamples);
+    int units;
+    float lr = 1.0; 
+    float sr = 1.0; 
+    float noise_rc = 0.0; 
+    float input_scaling = 1.0;
+    double rc_connectivity = 0.1; 
+    int seed = 0;
+    /*int units;           // Number of neurons.
+    float lr;            // Leaking rate (1.0 by default)
+    float sr;            // Spectral Radius (1.0 by default).
+    float noise_rc;      // Reservoir state noise gain (0 by default).
+    float input_scaling; // Input scaling (1.0 by default).
+    float rc_connectivity; // Connectivity (or density) of ``W`` (0.1 by default).
+    int seed;            // Seed for random number generation.*/
+
+
 // private:
     
 };

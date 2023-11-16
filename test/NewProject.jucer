@@ -12,6 +12,8 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="To4V8e" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <FILE id="OPJNar" name="Reservoir.cpp" compile="1" resource="0" file="Source/Reservoir.cpp"/>
+    <FILE id="K8cnSY" name="Reservoir.h" compile="0" resource="0" file="Source/Reservoir.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>

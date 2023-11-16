@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Reservoir.h"
 
 //==============================================================================
 /**
@@ -55,6 +56,8 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+
+    Reservoir Reservoir;
 
 private:
     //==============================================================================
