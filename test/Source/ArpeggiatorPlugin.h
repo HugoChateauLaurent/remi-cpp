@@ -55,55 +55,80 @@
 class Arpeggiator final : public AudioProcessor
 {
 public:
+    // Enumeration for musical divisions
+    enum MusicalDivision
+    {
+        Div2 = 0,
+        Div1,
+        DivHalf,
+        DivQuarter,
+        DivEighth,
+        DivSixteenth,
+        DivThirtySecond,
+        NumDivisions
+    };
 
     //==============================================================================
     Arpeggiator()
         : AudioProcessor (BusesProperties()) // add no audio buses at all
     {
-        addParameter (speed = new AudioParameterFloat ({ "speed", 1 }, "Arpeggiator Speed", 0.0, 1.0, 0.5));
+        rate = new AudioParameterInt("rate", "Arpeggiator Rate", 0, NumDivisions - 1, 3); // Default to 1/4
+        addParameter(rate);
     }
 
     //==============================================================================
-    void prepareToPlay (double sampleRate, int samplesPerBlock) override
+    void prepareToPlay(double sampleRate, int samplesPerBlock) override
     {
-        ignoreUnused (samplesPerBlock);
+        ignoreUnused(samplesPerBlock);
 
         notes.clear();
         currentNote = 0;
         lastNoteValue = -1;
         time = 0;
-        rate = static_cast<float> (sampleRate);
+        rateValue = static_cast<float>(sampleRate); // Initialize rateValue with sampleRate
     }
 
     void releaseResources() override {}
 
-    void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi) override
+    void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midi) override
     {
         // A pure MIDI plugin shouldn't be provided any audio data
-        jassert (buffer.getNumChannels() == 0);
+        jassert(buffer.getNumChannels() == 0);
 
         // however we use the buffer to get timing information
         auto numSamples = buffer.getNumSamples();
 
-        // get note duration
-        auto noteDuration = static_cast<int> (std::ceil (rate * 0.25f * (0.1f + (1.0f - (*speed)))));
+        AudioPlayHead* playHead = getPlayHead();
+        if (playHead == nullptr) return;
+
+        AudioPlayHead::CurrentPositionInfo positionInfo;
+        playHead->getCurrentPosition(positionInfo); // get the current position from the playhead
+
+        auto bpm = positionInfo.bpm;                //bpm is quarterNotesPerMinute
+        auto bps = bpm / 60;                        //bps is quarterNotesPerSecond
+        auto samplesPerBeat = rateValue / bps;      //number of samples per beat/quarternote is samples per sec / beats per second
+
+        // Calculate note duration based on the rate parameter
+        auto division = static_cast<MusicalDivision>(rate->get());
+        auto noteDuration = static_cast<int>(samplesPerBeat / std::pow(2.0, division));
 
         for (const auto metadata : midi)
         {
             const auto msg = metadata.getMessage();
-            if      (msg.isNoteOn())  notes.add (msg.getNoteNumber());
-            else if (msg.isNoteOff()) notes.removeValue (msg.getNoteNumber());
+            if (msg.isNoteOn())  notes.add(msg.getNoteNumber());
+            else if (msg.isNoteOff()) notes.removeValue(msg.getNoteNumber());
         }
 
         midi.clear();
+        time = (time + numSamples) % noteDuration;
 
         if ((time + numSamples) >= noteDuration)
         {
-            auto offset = jmax (0, jmin ((int) (noteDuration - time), numSamples - 1));
+            auto offset = jmax(0, jmin((int)(noteDuration - time), numSamples - 1));
 
             if (lastNoteValue > 0)
             {
-                midi.addEvent (MidiMessage::noteOff (1, lastNoteValue), offset);
+                midi.addEvent(MidiMessage::noteOff(1, lastNoteValue), offset);
                 lastNoteValue = -1;
             }
 
@@ -111,56 +136,55 @@ public:
             {
                 currentNote = (currentNote + 1) % notes.size();
                 lastNoteValue = notes[currentNote];
-                midi.addEvent (MidiMessage::noteOn  (1, lastNoteValue, (uint8) 127), offset);
+                midi.addEvent(MidiMessage::noteOn(1, lastNoteValue, (uint8)127), offset);
             }
 
         }
 
-        time = (time + numSamples) % noteDuration;
     }
 
     using AudioProcessor::processBlock;
 
     //==============================================================================
-    bool isMidiEffect() const override                     { return true; }
+    bool isMidiEffect() const override { return true; }
 
     //==============================================================================
-    AudioProcessorEditor* createEditor() override          { return new GenericAudioProcessorEditor (*this); }
-    bool hasEditor() const override                        { return true; }
+    AudioProcessorEditor* createEditor() override { return new GenericAudioProcessorEditor(*this); }
+    bool hasEditor() const override { return true; }
 
     //==============================================================================
-    const String getName() const override                  { return "Arpeggiator"; }
+    const String getName() const override { return "Arpeggiator"; }
 
-    bool acceptsMidi() const override                      { return true; }
-    bool producesMidi() const override                     { return true; }
-    double getTailLengthSeconds() const override           { return 0; }
-
-    //==============================================================================
-    int getNumPrograms() override                          { return 1; }
-    int getCurrentProgram() override                       { return 0; }
-    void setCurrentProgram (int) override                  {}
-    const String getProgramName (int) override             { return "None"; }
-    void changeProgramName (int, const String&) override   {}
+    bool acceptsMidi() const override { return true; }
+    bool producesMidi() const override { return true; }
+    double getTailLengthSeconds() const override { return 0; }
 
     //==============================================================================
-    void getStateInformation (MemoryBlock& destData) override
+    int getNumPrograms() override { return 1; }
+    int getCurrentProgram() override { return 0; }
+    void setCurrentProgram(int) override {}
+    const String getProgramName(int) override { return "None"; }
+    void changeProgramName(int, const String&) override {}
+
+    //==============================================================================
+    void getStateInformation(MemoryBlock& destData) override
     {
-        MemoryOutputStream (destData, true).writeFloat (*speed);
+        MemoryOutputStream(destData, true).writeFloat(rateValue);
     }
 
-    void setStateInformation (const void* data, int sizeInBytes) override
+    void setStateInformation(const void* data, int sizeInBytes) override
     {
-        speed->setValueNotifyingHost (MemoryInputStream (data, static_cast<size_t> (sizeInBytes), false).readFloat());
+        rateValue = MemoryInputStream(data, static_cast<size_t>(sizeInBytes), false).readFloat();
     }
 
 private:
     //==============================================================================
-    AudioParameterFloat* speed;
+    AudioParameterInt* rate; // Updated parameter type
     int currentNote, lastNoteValue;
     int time;
-    float rate;
+    float rateValue; // Updated variable type
     SortedSet<int> notes;
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Arpeggiator)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Arpeggiator)
 };
