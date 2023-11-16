@@ -22,7 +22,7 @@ public:
 
     void initialize();
     void forward(float* startRead, float* startWrite, int size);
-    std::vector<float> noise_gen(int size);
+    Eigen::VectorXd noise_gen(int size);
 
     int units;
     float lr = 1.0; 
