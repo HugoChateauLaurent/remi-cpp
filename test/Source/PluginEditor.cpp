@@ -9,6 +9,13 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+// This function can be used to convert parameters of the UI into values in the correct range
+double convertToNewRange(double oldValue, double oldMin, double oldMax, double newMin, double newMax) {
+   double newValue = (((oldValue - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
+   return newValue;
+}
+
+
 //==============================================================================
 NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
@@ -31,6 +38,7 @@ void NewProjectAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
     g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
+    g.drawFittedText ("test", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void NewProjectAudioProcessorEditor::resized()
