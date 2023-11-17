@@ -60,6 +60,14 @@ public:
     Reservoir Reservoir;
 
 private:
+
+    juce::AudioParameterFloat* sr;
+    juce::AudioParameterFloat* lr;
+    juce::AudioParameterFloat* input_scaling;
+    juce::AudioParameterFloat* units;
+    juce::AudioParameterFloat* noise_rc;
+
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NewProjectAudioProcessor)
 };

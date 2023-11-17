@@ -22,6 +22,12 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
                        )
 #endif
 {
+    addParameter(sr = new juce::AudioParameterFloat({ "sr", 1 }, "Chaos", 0.0, 10.0, 0.0));
+    addParameter(lr = new juce::AudioParameterFloat({ "lr", 2 }, "Inertia", 0.0, 10.0, 0.0));
+    addParameter(input_scaling = new juce::AudioParameterFloat({ "input_scaling", 3 }, "Gain", 0.0, 10.0, 0.0));
+    addParameter(units = new juce::AudioParameterFloat({ "units", 4 }, "Neurons", 0.0, 10.0, 0.0));
+    addParameter(noise_rc = new juce::AudioParameterFloat({ "noise_rc", 5 }, "Noise", 0.0, 10.0, 0.0));
+
 }
 
 NewProjectAudioProcessor::~NewProjectAudioProcessor()
@@ -182,12 +188,26 @@ void NewProjectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+
+    juce::MemoryOutputStream(destData, true).writeFloat(*sr);
+    juce::MemoryOutputStream(destData, true).writeFloat(*lr);
+    juce::MemoryOutputStream(destData, true).writeFloat(*input_scaling);
+    juce::MemoryOutputStream(destData, true).writeFloat(*units);
+    juce::MemoryOutputStream(destData, true).writeFloat(*noise_rc);
+
 }
 
 void NewProjectAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+
+    sr->setValueNotifyingHost(juce::MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
+    lr->setValueNotifyingHost(juce::MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
+    input_scaling->setValueNotifyingHost(juce::MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
+    units->setValueNotifyingHost(juce::MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
+    noise_rc->setValueNotifyingHost(juce::MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
+
 }
 
 //==============================================================================
