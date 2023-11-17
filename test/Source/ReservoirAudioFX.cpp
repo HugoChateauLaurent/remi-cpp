@@ -22,7 +22,7 @@ std::vector<double> ReservoirAudioFX::forward(const float* startRead, float* sta
         x[0] = startRead[i];
         reservoir_state = reservoir::forward(x, output);
         decode_state();
-        startWrite[i] = static_cast<float>(output);
+        startWrite[i] = static_cast<float>(output[0]);
     }
 
     return output;
@@ -36,7 +36,6 @@ std::vector<double> ReservoirAudioFX::decode_state() {
         output[i] = 0.0;
     }
 
-    // 
     for (int i = 0; i < out.size(); ++i) {
         for (int j = 0; j < reservoir::units; ++j) {
             output[i] += readout[j][i] * state[j];
