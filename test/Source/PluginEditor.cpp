@@ -36,8 +36,7 @@ void NewProjectAudioProcessorEditor::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
-    g.drawFittedText ("test", getLocalBounds(), juce::Justification::centred, 1);
+    g.drawFittedText ("ReMI Audio Processing Cell", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void NewProjectAudioProcessorEditor::resized()
