@@ -14,9 +14,13 @@
 #include <random>
 
 
-void Reservoir::initialize() {
+void Reservoir::initialize(bool new_random_seed) {
+
     // Set seed for random number generation
     Reservoir::generator.seed(seed);
+    if (new_random_seed) {
+        seed = generator.rand(999999);
+    }
 
     // Initialize W with your connectivity pattern
     W.resize(units, std::vector<double>(units));
