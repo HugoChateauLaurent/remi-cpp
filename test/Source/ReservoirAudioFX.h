@@ -18,9 +18,8 @@ public:
     ReservoirAudioFX();
     virtual ~ReservoirAudioFX() = default;
     Reservoir reservoir;
-    std::vector<std::vector<double>> readout(1, std::vector<double>(1, 0.0));
+    std::vector<std::vector<double>> readout(1, 1, std::vector<double>(1, 0.0));
     std::vector<double> reservoir_state;
-    std::vector<double>(1, 0.0) output;
 
     void initialize();
     void reset();
