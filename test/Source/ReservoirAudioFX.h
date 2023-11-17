@@ -16,19 +16,16 @@ public:
     ReservoirAudioFX();
     virtual ~ReservoirAudioFX() = default;
     Reservoir reservoir;
+    std::vector<std::vector<double>> readout(1, std::vector<double>(1,0.0));
+    std::vector<double> reservoir_state;
+    std::vector<double>(1, 0.0) output;
 
-    int units = 1;
-    float lr = 1.0;
-    float sr = 1.0;
-    float noise_rc = 0.0;
-    float input_scaling = 1.0;
-    double rc_connectivity = 0.1;
-    int seed;
+
     
 
     void initialize();
     void reset();
-    void forward(const float* startRead, float* startWrite, int size);
+    std::vector<double> forward(const float* startRead, float* startWrite, int size);
 
 
 //private:

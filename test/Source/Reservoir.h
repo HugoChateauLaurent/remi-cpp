@@ -16,7 +16,7 @@
 
 class Reservoir {
 public:
-    Reservoir();
+    Reservoir(int input_dim);
     virtual ~Reservoir() = default;
     int units = 1;
     int input_dim;

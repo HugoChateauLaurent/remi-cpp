@@ -13,9 +13,9 @@
 #include <iostream>
 #include <random>
 
-Reservoir::Reservoir(int input_dim) {
-    this.input_dim = input_dim;
-    initialize(True);
+Reservoir::Reservoir(int input_dim_value) {
+    input_dim = input_dim_value;
+    initialize(true);
 }
 
 
@@ -52,10 +52,10 @@ void Reservoir::forward(std::vector<double> x, std::vector<double> feedback) {
         for (int j = 0; j < units; ++j) {
             forward_pass[i] += W[i][j] * state[j];
         }
-        for (int j = 0; j < x.size; ++j) {
+        for (int j = 0; j < x.size(); ++j) {
             forward_pass[i] += W[i][j] * x[j] * input_scaling;
         }
-        for (int j = 0; j < feedback.size; ++j) {
+        for (int j = 0; j < feedback.size(); ++j) {
             forward_pass[i] += W[i][j] * feedback[j] * feedback;
         }
     }
