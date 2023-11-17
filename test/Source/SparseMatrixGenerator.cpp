@@ -1,43 +1,44 @@
 #include "SparseMatrixGenerator.h"
 #include <iostream>
 
-
-// Constructor initializing the size N, the random seed, the distribution type, and the sparsity ratio
-SparseMatrixGenerator::SparseMatrixGenerator(int N, int M, int seed, bool useNormalDistribution, float sparseRatio)
+// Constructeur initialisant la taille N, la graine aléatoire, le type de distribution et le ratio de sparsité
+SparseMatrixGenerator::SparseMatrixGenerator(int N, int seed, bool useNormalDistribution, float sparseRatio)
     : N(N), seed(seed), useNormalDistribution(useNormalDistribution), sparseRatio(sparseRatio) {}
 
-// Generic distribution matrix generator
-void SparseMatrixGenerator::generateMatrix(Eigen::MatrixXd& matrix, std::function<double(std::default_random_engine&)> distributionFunction) {
-    // Set random seed
+// Fonction générique pour la génération de la matrice en fonction de la distribution
+void SparseMatrixGenerator::generateMatrix(std::vector<std::vector<double>>& matrix, std::function<double(std::default_random_engine&)> distributionFunction) {
+    // Initialisation du générateur de nombres aléatoires avec la graine spécifiée
     std::default_random_engine generator(seed);
     std::uniform_real_distribution<double> distribution_sparse(0.0, 1.0);
 
     for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < M; ++j) {
-            // Generate random number in [0, 1]
+        for (int j = 0; j < N; ++j) {
+            // Génère un nombre aléatoire entre 0 et 1
             double randomSparseValue = distribution_sparse(generator);
-            
-            // If the number is less than the sparsity ratio, the value is zero; otherwise, it is obtained from the distribution.
+
+            // Si le nombre est inférieur au ratio de sparsité, la valeur est nulle, sinon elle est obtenue par la distribution
             if (randomSparseValue < sparseRatio) {
-                matrix(i, j) = 0.0;
-            } else {
+                matrix[i][j] = 0.0;
+            }
+            else {
                 double randomValue = distributionFunction(generator);
-                matrix(i, j) = randomValue;
+                matrix[i][j] = randomValue;
             }
         }
     }
 }
 
-// Function to generate sparse matrix
-Eigen::MatrixXd SparseMatrixGenerator::generateSparseMatrix() {
-    Eigen::MatrixXd matrix(N, M);
+// Fonction pour générer une matrice sparse
+std::vector<std::vector<double>> SparseMatrixGenerator::generateSparseMatrix() {
+    std::vector<std::vector<double>> matrix(N, std::vector<double>(N, 0.0));
 
     if (useNormalDistribution) {
-        // Normal distribution with mean = 0 and std dev = 1
+        // Distribution normale avec une moyenne de 0 et un écart-type de 1
         std::normal_distribution<double> distribution(0.0, 1.0);
         generateMatrix(matrix, distribution);
-    } else {
-        // Bernoulli distribution with probability 0.5
+    }
+    else {
+        // Distribution de Bernoulli avec une probabilité de 0.5
         std::bernoulli_distribution distribution(0.5);
         generateMatrix(matrix, distribution);
     }

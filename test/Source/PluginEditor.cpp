@@ -11,8 +11,7 @@
 
 // This function can be used to convert parameters of the UI into values in the correct range
 double convertToNewRange(double oldValue, double oldMin, double oldMax, double newMin, double newMax) {
-   double newValue = (((oldValue - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
-   return newValue;
+   return newValue = (((oldValue - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
 }
 
 

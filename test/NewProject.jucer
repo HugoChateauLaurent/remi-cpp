@@ -4,6 +4,12 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="SIR8ad" name="NewProject">
     <GROUP id="{4161FB18-ECDB-FA4F-52CA-F5DC495C3DDD}" name="Source">
+      <FILE id="ItC4z8" name="ArpeggiatorPlugin.h" compile="0" resource="0"
+            file="Source/ArpeggiatorPlugin.h"/>
+      <FILE id="ueocX6" name="ArpeggiatorPlugin.cpp" compile="1" resource="0"
+            file="Source/ArpeggiatorPlugin.cpp"/>
+      <FILE id="VhwxRB" name="Reservoir.cpp" compile="1" resource="0" file="Source/Reservoir.cpp"/>
+      <FILE id="uOvX0u" name="Reservoir.h" compile="0" resource="0" file="Source/Reservoir.h"/>
       <FILE id="XVEBp0" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="f2bTII" name="PluginProcessor.h" compile="0" resource="0"
@@ -11,9 +17,17 @@
       <FILE id="zLNKqr" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="To4V8e" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="Kauvgz" name="ReservoirAudioFX.cpp" compile="1" resource="0"
+            file="Source/ReservoirAudioFX.cpp"/>
+      <FILE id="moRoRj" name="ReservoirAudioFX.h" compile="0" resource="0"
+            file="Source/ReservoirAudioFX.h"/>
+      <GROUP id="{B976BC66-1B00-797C-47FC-8EDD9FB33A99}" name="Plots">
+        <FILE id="Ah6O9Q" name="Activity.cpp" compile="1" resource="0" file="Source/Activity.cpp"/>
+        <FILE id="kHe3Ma" name="Activity.h" compile="0" resource="0" file="Source/Activity.h"/>
+        <FILE id="t0rUj4" name="PCA.cpp" compile="1" resource="0" file="Source/PCA.cpp"/>
+        <FILE id="A21OCE" name="PCA.h" compile="0" resource="0" file="Source/PCA.h"/>
+      </GROUP>
     </GROUP>
-    <FILE id="OPJNar" name="Reservoir.cpp" compile="1" resource="0" file="Source/Reservoir.cpp"/>
-    <FILE id="K8cnSY" name="Reservoir.h" compile="0" resource="0" file="Source/Reservoir.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
