@@ -23,16 +23,22 @@ void Reservoir::initialize(bool new_random_seed) {
 
     // Set seed for random number generation
     if (new_random_seed) {
-        seed = generator.rand(999999);
+        seed = rand(); // generate random seed
+        srand(seed); // set seed of random generation
     }
     Reservoir::generator.seed(seed);
 
+    SparseMatrixGenerator initGenerator(1, 1, seed, true, sparseRatio); // normal distibution
+    initNormalMatrix = initGenerator.generateSparseMatrix();
+
+    SparseMatrixGenerator forwardGenerator(1, 1, seed+1, true, sparseRatio); // normal distibution
+    forwardNormalMatrix = forwardGenerator.generateSparseMatrix();
 
     // Initialize W with your connectivity pattern
     W.resize(units, std::vector<double>(units));
     for (int i = 0; i < units; ++i) {
         for (int j = 0; j < units; ++j) {
-            W[i][j] = rc_connectivity * ((double)rand() / RAND_MAX - 0.5); // normal
+            W[i][j] = rc_connectivity * initNormalMatrix[i][j]; // normal
         }
     }
 
@@ -44,31 +50,28 @@ void Reservoir::reset(bool new_random_seed) {
     initialize(new_random_seed);
 }
 
-void Reservoir::forward(std::vector<double> x, std::vector<double> feedback) {
+std::vector<double> Reservoir::forward(std::vector<double> x, std::vector<double> feedback) {
 
     // Update reservoir state
     std::vector<double> forward_pass(units, 0.0);
     for (int i = 0; i < units; ++i) {
         for (int j = 0; j < units; ++j) {
-            forward_pass[i] += W[i][j] * state[j];
+            forward_pass[i] += W[j][i] * state[j];
         }
         for (int j = 0; j < x.size(); ++j) {
             forward_pass[i] += W[i][j] * x[j] * input_scaling;
         }
         for (int j = 0; j < feedback.size(); ++j) {
-            forward_pass[i] += W[i][j] * feedback[j] * feedback;
+            forward_pass[i] += W[i][j] * feedback[j] * feedback_scaling;
         }
     }
     std::vector<double> s_next(units, 0.0);
     for (int i = 0; i < units; ++i) {
-        s_next[i] = (1 - lr) * state[i] + lr * std::tanh(forward_pass[i]) + noise_rc * normal_dist(generator); // normal noise - tanh(prod + b) - biais bernoulli
+        s_next[i] = (1 - lr) * state[i] + lr * std::tanh(forward_pass[i]) + noise_rc * forwardNormalMatrix[i][0]; // normal noise - tanh(prod + b) - biais bernoulli
     }
     state = s_next;
 
-    // Convert s_next to startWrite - sample per sample
-    for (int i = 0; i < size; ++i) {
-        startWrite[i] = static_cast<float>(s_next[i]);
-    }
+    return state;
 }
 
 std::vector<double> Reservoir::noise_gen(int size) { // noise gen

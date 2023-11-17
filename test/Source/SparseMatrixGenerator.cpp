@@ -2,8 +2,8 @@
 #include <iostream>
 
 // Constructeur initialisant la taille N, la graine aléatoire, le type de distribution et le ratio de sparsité
-SparseMatrixGenerator::SparseMatrixGenerator(int N, int seed, bool useNormalDistribution, float sparseRatio)
-    : N(N), seed(seed), useNormalDistribution(useNormalDistribution), sparseRatio(sparseRatio) {}
+SparseMatrixGenerator::SparseMatrixGenerator(int N, int M, int seed, bool useNormalDistribution, double sparseRatio)
+    : N(N), M(M), seed(seed), useNormalDistribution(useNormalDistribution), sparseRatio(sparseRatio) {}
 
 // Fonction générique pour la génération de la matrice en fonction de la distribution
 void SparseMatrixGenerator::generateMatrix(std::vector<std::vector<double>>& matrix, std::function<double(std::default_random_engine&)> distributionFunction) {
@@ -12,7 +12,7 @@ void SparseMatrixGenerator::generateMatrix(std::vector<std::vector<double>>& mat
     std::uniform_real_distribution<double> distribution_sparse(0.0, 1.0);
 
     for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < N; ++j) {
+        for (int j = 0; j < M; ++j) {
             // Génère un nombre aléatoire entre 0 et 1
             double randomSparseValue = distribution_sparse(generator);
 
@@ -30,7 +30,7 @@ void SparseMatrixGenerator::generateMatrix(std::vector<std::vector<double>>& mat
 
 // Fonction pour générer une matrice sparse
 std::vector<std::vector<double>> SparseMatrixGenerator::generateSparseMatrix() {
-    std::vector<std::vector<double>> matrix(N, std::vector<double>(N, 0.0));
+    std::vector<std::vector<double>> matrix(N, M, std::vector<double>(N, 0.0));
 
     if (useNormalDistribution) {
         // Distribution normale avec une moyenne de 0 et un écart-type de 1

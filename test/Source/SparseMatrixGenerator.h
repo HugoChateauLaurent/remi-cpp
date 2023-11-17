@@ -8,7 +8,7 @@
 class SparseMatrixGenerator {
 public:
     // Constructeur prenant la taille N, la graine aléatoire, le type de distribution et le ratio de sparsité
-    SparseMatrixGenerator(int N, int seed, bool useNormalDistribution, float sparseRatio);
+    SparseMatrixGenerator(int N, int M, int seed, bool useNormalDistribution, double sparseRatio);
 
     // Fonction pour générer une matrice sparse
     std::vector<std::vector<double>> generateSparseMatrix();

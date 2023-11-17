@@ -183,26 +183,14 @@ void NewProjectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
-    
-    MemoryOutputStream(destData, true).writeFloat(*sr);
-    MemoryOutputStream(destData, true).writeFloat(*lr);
-    MemoryOutputStream(destData, true).writeFloat(*input_scaling);
-    MemoryOutputStream(destData, true).writeFloat(*units);
-    MemoryOutputStream(destData, true).writeFloat(*noise_rc);
-    MemoryOutputStream(destData, true).writeFloat(*softmax_gain);
+
 }
 
 void NewProjectAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
-    
-    sr->setValueNotifyingHost(MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
-    lr->setValueNotifyingHost(MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
-    input_scaling->setValueNotifyingHost(MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
-    units->setValueNotifyingHost(MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
-    noise_rc->setValueNotifyingHost(MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
-    softmax_gain->setValueNotifyingHost(MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
+
 
 }
 

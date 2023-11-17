@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <random>
+#include "SparseMatrixGenerator.h"
 
 
 class Reservoir {
@@ -26,8 +27,11 @@ public:
     float input_scaling = 1.0;
     float feedback_scaling = 1.0;
     double rc_connectivity = 0.1;
+    double sparseRatio = 0.1;
     int seed;
 
+    std::vector<std::vector<double>> initNormalMatrix;
+    std::vector<std::vector<double>> forwardNormalMatrix;
     std::vector<std::vector<double>> W;          // Reservoir matrix
     std::vector<double> state;                   // Reservoir state
     std::default_random_engine generator;        // Random number generator
@@ -35,7 +39,7 @@ public:
 
     void initialize(bool new_random_seed);
     void reset(bool new_random_seed);
-    void forward(std::vector<double> x, std::vector<double> feedback);
+    std::vector<double> forward(std::vector<double> x, std::vector<double> feedback);
     std::vector<double> noise_gen(int size);
 
 //private:
