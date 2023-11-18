@@ -53,7 +53,7 @@ void Reservoir::reset(bool new_random_seed) {
 std::vector<double> Reservoir::forward(std::vector<double> x, std::vector<double> feedback) {
 
     // Update reservoir state
-    std::vector<double> forward_pass(units, 0.0);
+    std::vector<double> forward_pass(units, 0.0); // TODO: remove memory allocation in real-time loop
     for (int i = 0; i < units; ++i) {
         for (int j = 0; j < units; ++j) {
             forward_pass[i] += W[j][i] * state[j];
@@ -65,7 +65,7 @@ std::vector<double> Reservoir::forward(std::vector<double> x, std::vector<double
             forward_pass[i] += W[i][j] * feedback[j] * feedback_scaling;
         }
     }
-    std::vector<double> s_next(units, 0.0);
+    std::vector<double> s_next(units, 0.0); // TODO: remove memory allocation in real-time loop
     for (int i = 0; i < units; ++i) {
         s_next[i] = (1 - lr) * state[i] + lr * std::tanh(forward_pass[i]) + noise_rc * forwardNormalMatrix[i][0]; // normal noise - tanh(prod + b) - biais bernoulli
     }
@@ -77,7 +77,7 @@ std::vector<double> Reservoir::forward(std::vector<double> x, std::vector<double
 std::vector<double> Reservoir::noise_gen(int size) { // noise gen
     std::vector<double> noise(size);
     for (int i = 0; i < size; ++i) {
-        noise[i] = distribution(generator); 
+        noise[i] = forwardNormalMatrix[i][0];  // placeholder noise
     }
     return noise;
 }

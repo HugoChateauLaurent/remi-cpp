@@ -15,6 +15,7 @@ public:
 
 private:
     int N;
+    int M;
     int seed;
     bool useNormalDistribution;
     float sparseRatio;

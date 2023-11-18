@@ -18,12 +18,14 @@ public:
     ReservoirAudioFX();
     virtual ~ReservoirAudioFX() = default;
     Reservoir reservoir;
-    std::vector<std::vector<double>> readout(1, 1, std::vector<double>(1, 0.0));
     std::vector<double> reservoir_state;
+    std::vector<double> output;
+    std::vector<std::vector<double>> readout;
 
     void initialize();
     void reset();
     std::vector<double> forward(const float* startRead, float* startWrite, int size);
+    std::vector<double> decode_state();
 
 //private:
     

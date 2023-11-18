@@ -36,15 +36,18 @@ std::vector<double> ReservoirAudioFX::decode_state() {
         output[i] = 0.0;
     }
 
-    for (int i = 0; i < out.size(); ++i) {
+    for (int i = 0; i < output.size(); ++i) {
         for (int j = 0; j < reservoir::units; ++j) {
             output[i] += readout[j][i] * state[j];
         }
     }
+
+    return output;
 }
 
 
 void ReservoirAudioFX::initialize() {
+    readout(1, 1, std::vector<double>(1, 0.0));
     // Initialize readout
     for (int i = 0; i < readout.size(); ++i) {
         for (int j = 0; readout[i].size(); ++j) {
