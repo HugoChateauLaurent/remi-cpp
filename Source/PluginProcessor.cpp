@@ -22,12 +22,7 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
                        )
 #endif
 {
-    addParameter(sr = new juce::AudioParameterFloat({ "sr", 1 }, "Chaos", 0.0, 10.0, 0.0));
-    addParameter(lr = new juce::AudioParameterFloat({ "lr", 2 }, "Inertia", 0.0, 10.0, 0.0));
-    addParameter(input_scaling = new juce::AudioParameterFloat({ "input_scaling", 3 }, "Gain", 0.0, 10.0, 0.0));
-    addParameter(units = new juce::AudioParameterFloat({ "units", 4 }, "Neurons", 0.0, 10.0, 0.0));
-    addParameter(noise_rc = new juce::AudioParameterFloat({ "noise_rc", 5 }, "Noise", 0.0, 10.0, 0.0));
-
+    
 }
 
 NewProjectAudioProcessor::~NewProjectAudioProcessor()
@@ -140,35 +135,18 @@ void NewProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-
-    float* start = buffer.getWritePointer(0); // get the pointer to the first sample of the first channel
-    int size = buffer.getNumSamples();
-
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+    
+    // Mute all output channels
+    for (auto i = 0; i < totalNumOutputChannels; ++i)
     {
-        Reservoir.forward(start, start + size,
-            size);
+        auto* channelData = buffer.getWritePointer(i);
+        
+        // Multiply each sample by zero to mute the channel
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        {
+            channelData[sample] = reservoirFX.forward(channelData[sample]);
+        }
     }
-
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    // for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    // {
-    //     auto* channelData = buffer.getWritePointer (channel);
-
-    //     // ..do something to the data...
-    // }
 }
 
 //==============================================================================
@@ -189,12 +167,6 @@ void NewProjectAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 
-    juce::MemoryOutputStream(destData, true).writeFloat(*sr);
-    juce::MemoryOutputStream(destData, true).writeFloat(*lr);
-    juce::MemoryOutputStream(destData, true).writeFloat(*input_scaling);
-    juce::MemoryOutputStream(destData, true).writeFloat(*units);
-    juce::MemoryOutputStream(destData, true).writeFloat(*noise_rc);
-
 }
 
 void NewProjectAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
@@ -202,11 +174,6 @@ void NewProjectAudioProcessor::setStateInformation (const void* data, int sizeIn
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
 
-    sr->setValueNotifyingHost(juce::MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
-    lr->setValueNotifyingHost(juce::MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
-    input_scaling->setValueNotifyingHost(juce::MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
-    units->setValueNotifyingHost(juce::MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
-    noise_rc->setValueNotifyingHost(juce::MemoryInputStream(data, static_cast<size_t> (sizeInBytes), false).readFloat());
 
 }
 

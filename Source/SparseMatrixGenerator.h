@@ -4,27 +4,31 @@
 #include <vector>
 #include <functional>
 #include <random>
-#include <Eigen/Dense>
 
-class SparseMatrixGenerator {
-public:
-    // Constructor initializing the size NxM, the random seed, the distribution type, and the sparsity ratio
-    SparseMatrixGenerator(int N, int M, int seed, bool useNormalDistribution, float sparseRatio);
+class SparseMatrixGenerator {        // The class
+    public:
+        
+        int N;
+        int M;
+        int seed;
+        bool useNormalDistribution;
+        float sparseRatio;
+        
+        
 
-    ~SparseMatrixGenerator() = default;
+        // Fonction pour générer une matrice sparse
+        std::vector<std::vector<float>> generateSparseMatrix();
 
-    // Create sparse matrix
-    Eigen::MatrixXd generateSparseMatrix();
-
-private:
-    int N;
-    int M;
-    int seed;
-    bool useNormalDistribution;
-    float sparseRatio;
-
-    // Generate distribution matrix
-    void generateMatrix(Eigen::MatrixXd& matrix, std::function<double(std::default_random_engine&)> distributionFunction);
+        // Fonction générique pour la génération de la matrice en fonction de la distribution
+        void generateMatrix(std::vector<std::vector<float>>& matrix, std::function<float(std::default_random_engine&)> distributionFunction);
+    
+        SparseMatrixGenerator(int a, int b, int c, bool d, float e) {
+            N = a;
+            M = b;
+            seed = c;
+            useNormalDistribution = d;
+            sparseRatio = e;
+        }
 };
 
 #endif // SPARSE_MATRIX_GENERATOR_H

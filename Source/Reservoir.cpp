@@ -13,71 +13,62 @@
 #include <iostream>
 #include <random>
 
-
-void Reservoir::initialize() {
-    // Set seed for random number generation
-    Reservoir::generator.seed(seed);
-
-    // Initialize W with your connectivity pattern
-    W.resize(units, std::vector<double>(units));
-    for (int i = 0; i < units; ++i) {
-        for (int j = 0; j < units; ++j) {
-            W[i][j] = rc_connectivity * ((double)rand() / RAND_MAX - 0.5); // normal
-        }
-    }
-
-    // Normalize to achieve the desired connectivity
-    double norm = 0.0;
-    for (int i = 0; i < units; ++i) {
-        for (int j = 0; j < units; ++j) {
-            norm += W[i][j] * W[i][j];
-        }
-    }
-    norm = sqrt(norm);
-    if (norm > 0.0) {
-        for (int i = 0; i < units; ++i) {
-            for (int j = 0; j < units; ++j) {
-                W[i][j] /= norm;
-            }
-        }
-    }
-
-    // Initialize state to zeros
-    state.resize(units, 0.0);
+Reservoir::Reservoir(int input_dim_value) {
+    input_dim = input_dim_value;
+    initialize(true);
 }
 
-void Reservoir::forward(const float* startRead, float* startWrite, int size) {
-    std::vector<double> x(size);
-    for (int i = 0; i < size; ++i) {
-        x[i] = startRead[i];
-    }
 
-    // Apply input scaling
-    for (double& val : x) {
-        val *= input_scaling;
+void Reservoir::initialize(bool new_random_seed) {
+
+    // Set seed for random number generation
+    if (new_random_seed) {
+        seed = rand(); // generate random seed
+        srand(seed); // set seed of random generation
     }
+    generator.seed(seed);
+
+    SparseMatrixGenerator WGenerator(units, units, seed, true, 1.0f-rc_connectivity); // normal distibution
+    W = WGenerator.generateSparseMatrix();
+
+    SparseMatrixGenerator WinGenerator(input_dim, units, seed+1, false, 0.0f); // normal distibution
+    Win = WinGenerator.generateSparseMatrix();
+
+    // Initialize state to zeros
+    state.resize(units, 0.0f);
+}
+
+void Reservoir::reset(bool new_random_seed) {
+    initialize(new_random_seed);
+}
+
+
+std::vector<float> Reservoir::forward(std::vector<float> x) {
+
+    // TODO: add noise
 
     // Update reservoir state
-    std::vector<double> prod(units, 0.0);
+    std::vector<float> forward_pass(units, 0.0f);
     for (int i = 0; i < units; ++i) {
         for (int j = 0; j < units; ++j) {
-            prod[i] += W[i][j] * state[j];
+            forward_pass[i] += W[j][i] * state[j];
+        }
+        for (int j = 0; j < x.size(); ++j) {
+            forward_pass[i] += Win[j][i] * x[j] * input_scaling;
         }
     }
-    std::vector<double> s_next(units, 0.0);
+    std::vector<float> s_next(units, 0.0);
+    
     for (int i = 0; i < units; ++i) {
-        s_next[i] = (1 - lr) * state[i] + lr * prod[i] + noise_rc * distribution(generator); // normal noise - tanh(prod + b) - biais bernoulli
+        s_next[i] = (1 - lr) * state[i] + lr * std::tanh(forward_pass[i]); // normal noise - tanh(prod + b) - biais bernoulli
     }
     state = s_next;
 
-    // Convert s_next to startWrite - sample per sample
-    for (int i = 0; i < size; ++i) {
-        startWrite[i] = static_cast<float>(s_next[i]);
-    }
+    return state;
 }
 
-std::vector<double> Reservoir::noise_gen(int size) { // noise gen
-    std::vector<double> noise(size);
+std::vector<float> Reservoir::noise_gen(int size) { // noise gen
+    std::vector<float> noise(size);
     for (int i = 0; i < size; ++i) {
         noise[i] = distribution(generator); 
     }
