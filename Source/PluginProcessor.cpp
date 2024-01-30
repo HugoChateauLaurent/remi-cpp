@@ -136,12 +136,10 @@ void NewProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     
-    // Mute all output channels
     for (auto i = 0; i < totalNumOutputChannels; ++i)
     {
         auto* channelData = buffer.getWritePointer(i);
         
-        // Multiply each sample by zero to mute the channel
         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         {
             channelData[sample] = reservoirFX.forward(channelData[sample]);
