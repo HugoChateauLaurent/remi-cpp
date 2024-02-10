@@ -4,6 +4,14 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="SIR8ad" name="NewProject">
     <GROUP id="{4161FB18-ECDB-FA4F-52CA-F5DC495C3DDD}" name="Source">
+      <FILE id="zWfVM5" name="ReservoirAudioFX.cpp" compile="1" resource="0"
+            file="Source/ReservoirAudioFX.cpp"/>
+      <FILE id="pSz4ZL" name="ReservoirAudioFX.h" compile="0" resource="0"
+            file="Source/ReservoirAudioFX.h"/>
+      <FILE id="kKzUet" name="SparseMatrixGenerator.cpp" compile="1" resource="0"
+            file="Source/SparseMatrixGenerator.cpp"/>
+      <FILE id="ooh3qv" name="SparseMatrixGenerator.h" compile="0" resource="0"
+            file="Source/SparseMatrixGenerator.h"/>
       <FILE id="XVEBp0" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="f2bTII" name="PluginProcessor.h" compile="0" resource="0"
