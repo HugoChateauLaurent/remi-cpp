@@ -21,7 +21,9 @@ public:
     Reservoir reservoir;
     std::vector<std::vector<float>> readout;
     std::vector<float> reservoir_state;
-    std::vector<float> output;
+    float output = 0.0f;
+    float old_output = 0.0f;
+    float feedback_mix = 0.0f;
     
     int seed;
 

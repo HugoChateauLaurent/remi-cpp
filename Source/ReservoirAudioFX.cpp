@@ -16,20 +16,22 @@ ReservoirAudioFX::ReservoirAudioFX() : reservoir(2) {
 }
 
 float ReservoirAudioFX::forward(float sample) {
-    std::vector<float> x(1);
-    x[0] = sample;
+    std::vector<float> x(2);
+    x[0] = (1-feedback_mix) * sample;
+    x[1] = feedback_mix * old_output;
     reservoir_state = reservoir.forward(x);
     decode_state();
-    return outputGain*static_cast<float>(output[0]);
+    old_output = output;
+    return outputGain*static_cast<float>(output);
 }
 
 void ReservoirAudioFX::decode_state() {
 
     // Reinitialize output
-    output[0] = 0.0f;
+    output = 0.0f;
 
     for (int j = 0; j < reservoir.units; ++j) {
-        output[0] += readout[j][0] * reservoir_state[j];
+        output += readout[j][0] * reservoir_state[j];
     }
 }
 
@@ -43,7 +45,7 @@ void ReservoirAudioFX::initialize(bool new_random_seed) {
     generator.seed(seed);
     SparseMatrixGenerator readoutGenerator(reservoir.units, 1, seed, false, 0.0f);
     readout = readoutGenerator.generateSparseMatrix();
-    output.resize(1, 0.0f);
+    output = 0.0f;
 }
 
 

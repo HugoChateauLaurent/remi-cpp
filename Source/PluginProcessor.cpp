@@ -46,6 +46,13 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
                                                             0.0f,   // minimum value
                                                             100.0f,   // maximum value
                                                             50.0f)); // default value
+        addParameter (feedback_mix_parameter = new juce::AudioParameterFloat ("feedback_mix_parameter", // parameterID
+                                                            "feedback_mix_parameter", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+                                                            
+                                                            
     }
     
 }
@@ -163,6 +170,7 @@ void NewProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     reservoirFX.reservoir.input_scaling=*input_scaling_parameter;
     reservoirFX.reservoir.lr=*leak_rate_parameter;
     reservoirFX.outputGain=*outputGain_parameter;
+    reservoirFX.feedback_mix=*feedback_mix_parameter;
     reservoirFX.reservoir.sr=*spectral_radius_parameter;
     for (auto i = 0; i < totalNumOutputChannels; ++i)
     {

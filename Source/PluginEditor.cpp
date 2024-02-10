@@ -10,8 +10,8 @@
 #include "PluginEditor.h"
 
 // This function can be used to convert parameters of the UI into values in the correct range
-double convertToNewRange(double oldValue, double oldMin, double oldMax, double newMin, double newMax) {
-    double newValue((((oldValue - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin);
+float convertToNewRange(float oldValue, float oldMin, float oldMax, float newMin, float newMax) {
+    float newValue((((oldValue - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin);
     return newValue;
 }
 
