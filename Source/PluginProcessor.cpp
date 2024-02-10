@@ -26,26 +26,26 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
     {
         addParameter (input_scaling_parameter = new juce::AudioParameterFloat ("input_scaling", // parameterID
                                                             "Input Scaling", // parameter name
-                                                            0.0f,   // minimum value
+                                                            0.1f,   // minimum value
                                                             1.0f,   // maximum value
                                                             0.5f)); // default value
                                                             
         addParameter (outputGain_parameter = new juce::AudioParameterFloat ("outputGain", // parameterID
                                                             "Output Gain", // parameter name
-                                                            0.0f,   // minimum value
+                                                            0.1f,   // minimum value
                                                             1.0f,   // maximum value
                                                             0.5f)); // default value
                                                             
         addParameter (leak_rate_parameter = new juce::AudioParameterFloat ("leak_rate", // parameterID
                                                             "leak_rate_parameter", // parameter name
-                                                            0.0f,   // minimum value
+                                                            0.1f,   // minimum value
                                                             1.0f,   // maximum value
-                                                            1.0f)); // default value
+                                                            0.1f)); // default value
         addParameter (spectral_radius_parameter = new juce::AudioParameterFloat ("spectral_radius_parameter", // parameterID
                                                             "spectral_radius_parameter", // parameter name
                                                             0.0f,   // minimum value
-                                                            100.0f,   // maximum value
-                                                            50.0f)); // default value
+                                                            3.0f,   // maximum value
+                                                            1.5f)); // default value
         addParameter (feedback_mix_parameter = new juce::AudioParameterFloat ("feedback_mix_parameter", // parameterID
                                                             "feedback_mix_parameter", // parameter name
                                                             0.0f,   // minimum value
