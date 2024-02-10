@@ -19,11 +19,11 @@ class Reservoir {
 public:
     Reservoir(int input_dim);
     virtual ~Reservoir() = default;
-    int units = 100;
+    int units = 16;
     int input_dim;
     float lr = 1.0f;
-    float sr = 100.0f;
-    float noise_rc = 100.0f;
+    float sr = 1.0f;
+    float noise_rc = 0.0f;
     float input_scaling = 1.0f;
     float feedback_scaling = 1.0f;
     float rc_connectivity = 0.1f;

@@ -40,6 +40,8 @@ public:
     void set_input_scaling(float input_scaling);
     void set_units(int units);
     void set_noise_rc(float noise_rc);
+    
+    float outputGain = 0.0f;
 
 //private:
     

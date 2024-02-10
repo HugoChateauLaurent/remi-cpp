@@ -61,7 +61,9 @@ public:
 
 private:
     //==============================================================================
-
-    
+    juce::AudioParameterFloat* input_scaling_parameter;
+    juce::AudioParameterFloat* outputGain_parameter;
+    juce::AudioParameterFloat* leak_rate_parameter;
+    juce::AudioParameterFloat* spectral_radius_parameter;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NewProjectAudioProcessor)
 };

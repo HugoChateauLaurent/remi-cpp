@@ -51,7 +51,7 @@ std::vector<float> Reservoir::forward(std::vector<float> x) {
     std::vector<float> forward_pass(units, 0.0f);
     for (int i = 0; i < units; ++i) {
         for (int j = 0; j < units; ++j) {
-            forward_pass[i] += W[j][i] * state[j];
+            forward_pass[i] += W[j][i] * sr * state[j];
         }
         for (int j = 0; j < x.size(); ++j) {
             forward_pass[i] += Win[j][i] * x[j] * input_scaling;

@@ -8,6 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "Reservoir.h"
 
 //==============================================================================
 NewProjectAudioProcessor::NewProjectAudioProcessor()
@@ -22,6 +23,30 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
                        )
 #endif
 {
+    {
+        addParameter (input_scaling_parameter = new juce::AudioParameterFloat ("input_scaling", // parameterID
+                                                            "Input Scaling", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.5f)); // default value
+                                                            
+        addParameter (outputGain_parameter = new juce::AudioParameterFloat ("outputGain", // parameterID
+                                                            "Output Gain", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.5f)); // default value
+                                                            
+        addParameter (leak_rate_parameter = new juce::AudioParameterFloat ("leak_rate", // parameterID
+                                                            "leak_rate_parameter", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            1.0f)); // default value
+        addParameter (spectral_radius_parameter = new juce::AudioParameterFloat ("spectral_radius_parameter", // parameterID
+                                                            "spectral_radius_parameter", // parameter name
+                                                            0.0f,   // minimum value
+                                                            100.0f,   // maximum value
+                                                            50.0f)); // default value
+    }
     
 }
 
@@ -135,7 +160,10 @@ void NewProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-    
+    reservoirFX.reservoir.input_scaling=*input_scaling_parameter;
+    reservoirFX.reservoir.lr=*leak_rate_parameter;
+    reservoirFX.outputGain=*outputGain_parameter;
+    reservoirFX.reservoir.sr=*spectral_radius_parameter;
     for (auto i = 0; i < totalNumOutputChannels; ++i)
     {
         auto* channelData = buffer.getWritePointer(i);

@@ -20,7 +20,7 @@ float ReservoirAudioFX::forward(float sample) {
     x[0] = sample;
     reservoir_state = reservoir.forward(x);
     decode_state();
-    return static_cast<float>(output[0]);
+    return outputGain*static_cast<float>(output[0]);
 }
 
 void ReservoirAudioFX::decode_state() {
