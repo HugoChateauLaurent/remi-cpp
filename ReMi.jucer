@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="kUEARs" name="NewProject" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
-  <MAINGROUP id="SIR8ad" name="NewProject">
-    <GROUP id="{4161FB18-ECDB-FA4F-52CA-F5DC495C3DDD}" name="Source">
-      <FILE id="zWfVM5" name="ReservoirAudioFX.cpp" compile="1" resource="0"
-            file="Source/ReservoirAudioFX.cpp"/>
-      <FILE id="pSz4ZL" name="ReservoirAudioFX.h" compile="0" resource="0"
-            file="Source/ReservoirAudioFX.h"/>
-      <FILE id="kKzUet" name="SparseMatrixGenerator.cpp" compile="1" resource="0"
-            file="Source/SparseMatrixGenerator.cpp"/>
-      <FILE id="ooh3qv" name="SparseMatrixGenerator.h" compile="0" resource="0"
-            file="Source/SparseMatrixGenerator.h"/>
-      <FILE id="XVEBp0" name="PluginProcessor.cpp" compile="1" resource="0"
-            file="Source/PluginProcessor.cpp"/>
-      <FILE id="f2bTII" name="PluginProcessor.h" compile="0" resource="0"
-            file="Source/PluginProcessor.h"/>
-      <FILE id="zLNKqr" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="To4V8e" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-    </GROUP>
-    <FILE id="OPJNar" name="Reservoir.cpp" compile="1" resource="0" file="Source/Reservoir.cpp"/>
-    <FILE id="K8cnSY" name="Reservoir.h" compile="0" resource="0" file="Source/Reservoir.h"/>
+<JUCERPROJECT id="kUEARs" name="ReMi" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              pluginFormats="buildVST3" pluginManufacturer="ReMi" pluginManufacturerCode="ReMi"
+              aaxIdentifier="com.ReMi.ReMi" bundleIdentifier="com.ReMi.ReMi"
+              headerPath="C:\Users\HomePC\source\repos\remi-cpp\eigen-3.4.0">
+  <MAINGROUP id="SIR8ad" name="ReMi">
+    <FILE id="NRoXTN" name="PluginEditor.cpp" compile="1" resource="0"
+          file="Source/PluginEditor.cpp"/>
+    <FILE id="w090dV" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    <FILE id="dEOCkD" name="PluginProcessor.cpp" compile="1" resource="0"
+          file="Source/PluginProcessor.cpp"/>
+    <FILE id="ez1LoT" name="PluginProcessor.h" compile="0" resource="0"
+          file="Source/PluginProcessor.h"/>
+    <FILE id="yWuTQC" name="Reservoir.cpp" compile="1" resource="0" file="Source/Reservoir.cpp"/>
+    <FILE id="xG9Mbn" name="Reservoir.h" compile="0" resource="0" file="Source/Reservoir.h"/>
+    <FILE id="S95SpW" name="ReservoirAudioFX.cpp" compile="1" resource="0"
+          file="Source/ReservoirAudioFX.cpp"/>
+    <FILE id="kL95nI" name="ReservoirAudioFX.h" compile="0" resource="0"
+          file="Source/ReservoirAudioFX.h"/>
+    <FILE id="siiun3" name="SparseMatrixGenerator.cpp" compile="1" resource="0"
+          file="Source/SparseMatrixGenerator.cpp"/>
+    <FILE id="kIfZXt" name="SparseMatrixGenerator.h" compile="0" resource="0"
+          file="Source/SparseMatrixGenerator.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
     <VS2022 targetFolder="Builds/VisualStudio2022">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="ReMi"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="ReMi"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>

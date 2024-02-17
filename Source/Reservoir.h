@@ -19,7 +19,7 @@ class Reservoir {
 public:
     Reservoir(int input_dim);
     virtual ~Reservoir() = default;
-    int units = 16;
+    int neurons = 16;
     int input_dim;
     float lr = 1.0f;
     float sr = 1.0f;

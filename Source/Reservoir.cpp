@@ -12,6 +12,8 @@
 
 #include <iostream>
 #include <random>
+#include <Eigen/Sparse>
+
 
 Reservoir::Reservoir(int input_dim_value) {
     input_dim = input_dim_value;
