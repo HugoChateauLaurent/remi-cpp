@@ -62,7 +62,7 @@ public:
 private:
     //==============================================================================
     juce::AudioParameterFloat* input_scaling_parameter;
-    juce::AudioParameterFloat* feedback_mix_parameter;
+    juce::AudioParameterFloat* feedback_scaling_parameter;
     juce::AudioParameterFloat* outputGain_parameter;
     juce::AudioParameterFloat* leak_rate_parameter;
     juce::AudioParameterFloat* spectral_radius_parameter;

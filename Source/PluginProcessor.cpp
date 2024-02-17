@@ -47,8 +47,8 @@ ReMiAudioProcessor::ReMiAudioProcessor()
                                                             0.0f,   // minimum value
                                                             3.0f,   // maximum value
                                                             1.5f)); // default value
-        addParameter (feedback_mix_parameter = new juce::AudioParameterFloat ("feedback_mix_parameter", // parameterID
-                                                            "feedback_mix_parameter", // parameter name
+        addParameter (feedback_scaling_parameter = new juce::AudioParameterFloat ("feedback_scaling_parameter", // parameterID
+                                                            "feedback_scaling_parameter", // parameter name
                                                             0.0f,   // minimum value
                                                             1.0f,   // maximum value
                                                             0.0f)); // default value
@@ -177,7 +177,7 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     reservoirFX.reservoir.input_scaling=*input_scaling_parameter;
     reservoirFX.reservoir.lr=*leak_rate_parameter;
     reservoirFX.outputGain=*outputGain_parameter;
-    reservoirFX.feedback_mix=*feedback_mix_parameter;
+    reservoirFX.reservoir.fb_scaling=*feedback_scaling_parameter;
     reservoirFX.reservoir.sr=*spectral_radius_parameter;
     
     for (auto i = 0; i < totalNumOutputChannels; ++i)

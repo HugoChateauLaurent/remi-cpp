@@ -37,7 +37,7 @@ void ReMiAudioProcessorEditor::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
-    g.drawFittedText ("ReMi HP", getLocalBounds(), juce::Justification::centred, 1);
+    g.drawFittedText ("ReMi", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void ReMiAudioProcessorEditor::resized()

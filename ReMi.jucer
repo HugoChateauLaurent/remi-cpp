@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               pluginFormats="buildVST3" pluginManufacturer="ReMi" pluginManufacturerCode="ReMi"
               aaxIdentifier="com.ReMi.ReMi" bundleIdentifier="com.ReMi.ReMi"
-              headerPath="C:\Users\HomePC\source\repos\remi-cpp\eigen-3.4.0">
+              headerPath="C:\Users\HomePC\source\repos\remi-cpp\">
   <MAINGROUP id="SIR8ad" name="ReMi">
     <FILE id="NRoXTN" name="PluginEditor.cpp" compile="1" resource="0"
           file="Source/PluginEditor.cpp"/>
@@ -19,10 +19,8 @@
           file="Source/ReservoirAudioFX.cpp"/>
     <FILE id="kL95nI" name="ReservoirAudioFX.h" compile="0" resource="0"
           file="Source/ReservoirAudioFX.h"/>
-    <FILE id="siiun3" name="SparseMatrixGenerator.cpp" compile="1" resource="0"
-          file="Source/SparseMatrixGenerator.cpp"/>
-    <FILE id="kIfZXt" name="SparseMatrixGenerator.h" compile="0" resource="0"
-          file="Source/SparseMatrixGenerator.h"/>
+    <FILE id="WcU5Gv" name="utils.cpp" compile="1" resource="0" file="Source/utils.cpp"/>
+    <FILE id="zA9FHy" name="utils.h" compile="0" resource="0" file="Source/utils.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
