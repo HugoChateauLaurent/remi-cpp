@@ -10,25 +10,29 @@
 
 #include "ReservoirAudioFX.h"
 #include "Reservoir.h"
-#include "utils.h"
 
-ReservoirAudioFX::ReservoirAudioFX() : reservoir(1, 1, 1.0f, 1.0f) {
+ReservoirAudioFX::ReservoirAudioFX() : reservoir(2) {
     initialize(true);
 }
 
 float ReservoirAudioFX::forward(float sample) {
-    Eigen::VectorXf x = Eigen::VectorXf::Constant(1, sample);
-    reservoir_state = reservoir.forward(x,  Eigen::VectorXf::Constant(1, output));
+    std::vector<float> x(2);
+    x[0] = (1-feedback_mix) * sample;
+    x[1] = feedback_mix * old_output;
+    reservoir_state = reservoir.forward(x);
     decode_state();
+    old_output = output;
     return outputGain*static_cast<float>(output);
 }
 
 void ReservoirAudioFX::decode_state() {
 
     // Reinitialize output
-    Eigen::VectorXf output_vector = readout * reservoir_state;
+    output = 0.0f;
 
-    output = output_vector(0);
+    for (int j = 0; j < reservoir.units; ++j) {
+        output += readout[j][0] * reservoir_state[j];
+    }
 }
 
 
@@ -39,7 +43,8 @@ void ReservoirAudioFX::initialize(bool new_random_seed) {
         srand(seed); // set seed of random generation
     }
     generator.seed(seed);
-    initializeSparseMatrix(readout, 1, reservoir.units, seed, 1.0f, readout_connectivity, "bernoulli", 0.5f, 0.0f);
+    SparseMatrixGenerator readoutGenerator(reservoir.units, 1, seed, false, 0.0f);
+    readout = readoutGenerator.generateSparseMatrix();
     output = 0.0f;
 }
 
