@@ -58,6 +58,8 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     ReservoirAudioFX reservoirFX;
+    
+    float getModulationValue() const;
 
 private:
     //==============================================================================
@@ -66,6 +68,24 @@ private:
     juce::AudioParameterFloat* outputGain_parameter;
     juce::AudioParameterFloat* leak_rate_parameter;
     juce::AudioParameterFloat* spectral_radius_parameter;
+    juce::AudioParameterInt* rate_parameter;
+    juce::AudioParameterInt* pattern_parameter;
+    // Enumeration for musical divisions
+    enum MusicalDivision
+    {
+        Div2 = 0,
+        Div1,
+        DivHalf,
+        DivQuarter,
+        DivEighth,
+        DivSixteenth,
+        DivThirtySecond,
+        NumDivisions
+    };
+    float currentVolume;
+    int time;
+    float rateValue; // Updated variable type
+
     // juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> highPassFilter;
 
 

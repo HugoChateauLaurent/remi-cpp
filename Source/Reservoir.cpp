@@ -14,13 +14,13 @@
 #include <random>
 
 
-Reservoir::Reservoir(int input_dim_value) {
+ReservoirNetwork::ReservoirNetwork(int input_dim_value) {
     input_dim = input_dim_value;
     initialize(true);
 }
 
 
-void Reservoir::initialize(bool new_random_seed) {
+void ReservoirNetwork::initialize(bool new_random_seed) {
 
     // Set seed for random number generation
     if (new_random_seed) {
@@ -39,12 +39,12 @@ void Reservoir::initialize(bool new_random_seed) {
     state.resize(units, 0.0f);
 }
 
-void Reservoir::reset(bool new_random_seed) {
+void ReservoirNetwork::reset(bool new_random_seed) {
     initialize(new_random_seed);
 }
 
 
-std::vector<float> Reservoir::forward(std::vector<float> x) {
+std::vector<float> ReservoirNetwork::forward(std::vector<float> x) {
 
     // TODO: add noise
 
@@ -68,7 +68,7 @@ std::vector<float> Reservoir::forward(std::vector<float> x) {
     return state;
 }
 
-std::vector<float> Reservoir::noise_gen(int size) { // noise gen
+std::vector<float> ReservoirNetwork::noise_gen(int size) { // noise gen
     std::vector<float> noise(size);
     for (int i = 0; i < size; ++i) {
         noise[i] = distribution(generator); 

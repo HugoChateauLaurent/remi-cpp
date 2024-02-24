@@ -18,7 +18,7 @@ class ReservoirAudioFX {
 public:
     ReservoirAudioFX();
     virtual ~ReservoirAudioFX() = default;
-    Reservoir reservoir;
+    ReservoirNetwork reservoir;
     std::vector<std::vector<float>> readout;
     std::vector<float> reservoir_state;
     float output = 0.0f;
@@ -33,7 +33,7 @@ public:
 
     void initialize(bool new_random_seed);
     void reset(bool new_random_seed);
-    float forward(float sample);
+    float forward(int pattern);
     void decode_state();
 
 

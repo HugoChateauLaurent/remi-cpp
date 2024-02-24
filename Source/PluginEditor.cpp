@@ -20,13 +20,23 @@ float convertToNewRange(float oldValue, float oldMin, float oldMax, float newMin
 ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
+    addAndMakeVisible(horizontalMeter);
+    
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
+    
+    startTimerHz(30);
 }
 
 ReMiAudioProcessorEditor::~ReMiAudioProcessorEditor()
 {
+}
+
+void ReMiAudioProcessorEditor::timerCallback()
+{
+    horizontalMeter.setLevel(audioProcessor.getModulationValue());
+    horizontalMeter.repaint();
 }
 
 //==============================================================================
@@ -37,11 +47,14 @@ void ReMiAudioProcessorEditor::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
-    g.drawFittedText ("ReMi HP", getLocalBounds(), juce::Justification::centred, 1);
+    g.drawFittedText ("ReMi LFO", getLocalBounds(), juce::Justification::centred, 1);
+    
+    
 }
 
 void ReMiAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+    horizontalMeter.setBounds(100, 100, 200, 15);
 }

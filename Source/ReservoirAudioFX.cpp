@@ -10,19 +10,24 @@
 
 #include "ReservoirAudioFX.h"
 #include "Reservoir.h"
+#include <fstream>
+using namespace std;
 
-ReservoirAudioFX::ReservoirAudioFX() : reservoir(2) {
+
+ReservoirAudioFX::ReservoirAudioFX() : reservoir(4) {
     initialize(true);
 }
 
-float ReservoirAudioFX::forward(float sample) {
-    std::vector<float> x(2);
-    x[0] = (1-feedback_mix) * sample;
-    x[1] = feedback_mix * old_output;
+float ReservoirAudioFX::forward(int pattern) {
+    std::vector<float> x(4);
+    x[pattern] = 1;
+    x[3] = feedback_mix * old_output;
     reservoir_state = reservoir.forward(x);
     decode_state();
+    
+    output = 1 / (1 + exp(-output*outputGain)); // sigmoid to get [0,1]
     old_output = output;
-    return outputGain*static_cast<float>(output);
+    return static_cast<float>(output);
 }
 
 void ReservoirAudioFX::decode_state() {
@@ -31,7 +36,7 @@ void ReservoirAudioFX::decode_state() {
     output = 0.0f;
 
     for (int j = 0; j < reservoir.units; ++j) {
-        output += readout[j][0] * reservoir_state[j];
+        output += readout[j][0] * reservoir_state[j] / reservoir.units;
     }
 }
 

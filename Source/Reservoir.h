@@ -15,10 +15,10 @@
 #include "SparseMatrixGenerator.h"
 
 
-class Reservoir {
+class ReservoirNetwork {
 public:
-    Reservoir(int input_dim);
-    virtual ~Reservoir() = default;
+    ReservoirNetwork(int input_dim);
+    virtual ~ReservoirNetwork() = default;
     int units = 16;
     int input_dim;
     float lr = 1.0f;
