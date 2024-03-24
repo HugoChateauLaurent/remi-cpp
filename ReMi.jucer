@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="kUEARs" name="ReMi LFO" projectType="audioplug" useAppConfig="0"
+<JUCERPROJECT id="kUEARs" name="ReMi Synth" projectType="audioplug" useAppConfig="0"
               displaySplashScreen="1" jucerFormatVersion="1" pluginFormats="buildVST3"
-              pluginManufacturer="ReMi LFO" pluginManufacturerCode="ReMi" aaxIdentifier="com.ReMi.ReMi"
-              bundleIdentifier="com.ReMi.ReMi" headerPath="C:\Users\HomePC\source\repos\remi-cpp\eigen-3.4.0"
-              companyWebsite="remi-audio.com">
-  <MAINGROUP id="SIR8ad" name="ReMi LFO">
+              pluginManufacturer="ReMi Synth" pluginManufacturerCode="ReMi"
+              aaxIdentifier="com.ReMi.ReMi" bundleIdentifier="com.ReMi.ReMi"
+              headerPath="C:\Users\HomePC\source\repos\remi-cpp\eigen-3.4.0"
+              companyWebsite="remi-audio.com" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
+  <MAINGROUP id="SIR8ad" name="ReMi Synth">
     <GROUP id="{A3830032-0CF3-B4B0-D6AA-DC040E2DCA25}" name="Component">
       <FILE id="A0DVDT" name="HorizontalMeter.h" compile="0" resource="0"
             file="Source/Component/HorizontalMeter.h"/>

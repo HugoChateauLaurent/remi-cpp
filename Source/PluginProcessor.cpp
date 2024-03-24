@@ -248,7 +248,7 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
         
         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         {
-            channelData[sample] = channelData[sample] * currentVolume; 
+            channelData[sample] = currentVolume; 
         }
     }
 

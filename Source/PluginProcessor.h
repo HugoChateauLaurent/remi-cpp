@@ -82,6 +82,17 @@ private:
         DivEighth,
         DivSixteenth,
         DivThirtySecond,
+        DivSixtyFourth,
+        Div128th,
+        Div256th,
+        Div512th,
+        Div1024th,
+        Div2048th,
+        Div4096th,
+        Div8192th,
+        Div16384th,
+        Div32768th,
+        Div65536th,
         NumDivisions
     };
     float currentVolume;
