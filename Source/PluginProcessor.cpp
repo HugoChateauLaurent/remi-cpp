@@ -10,6 +10,8 @@
 #include "PluginEditor.h"
 #include "Reservoir.h"
 #include <random>
+#include <iostream>
+#include <fstream> 
 
 
 
@@ -31,6 +33,18 @@ ReMiAudioProcessor::ReMiAudioProcessor()
                                                             "Input Scaling", // parameter name
                                                             0.0f,   // minimum value
                                                             5.0f,   // maximum value
+                                                            1.0f)); // default value
+
+        addParameter (min_volume_parameter = new juce::AudioParameterFloat ("min_volume", // parameterID
+                                                            "Min Volume", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+
+        addParameter (max_volume_parameter = new juce::AudioParameterFloat ("max_volume", // parameterID
+                                                            "Max Volume", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
                                                             1.0f)); // default value
                                                             
         addParameter (outputGain_parameter = new juce::AudioParameterFloat ("outputGain", // parameterID
@@ -151,6 +165,10 @@ void ReMiAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     currentVolume = 0.0f;
     time = 0;
     rateValue = static_cast<float>(sampleRate); // Initialize rateValue with sampleRate
+ 
+
+    
+
 }
 
 void ReMiAudioProcessor::releaseResources()
@@ -192,6 +210,7 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     juce::AudioPlayHead* playHead = getPlayHead();
     if (playHead == nullptr) return;
 
+    AudioPlayHead::CurrentPositionInfo info;
     juce::AudioPlayHead::CurrentPositionInfo positionInfo;
     playHead->getCurrentPosition(positionInfo); // get the current position from the playhead
 
@@ -209,6 +228,8 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     {
         // currentVolume = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         currentVolume = reservoirFX.forward((pattern_parameter->get()) - 1);
+        currentVolume = (currentVolume - min_volume_parameter->get()) / (max_volume_parameter->get() - min_volume_parameter->get());
+        currentVolume = juce::jlimit(0.0f, 1.0f, currentVolume); // Ensure currentVolume is between 0 and 1
     }
 
 
@@ -230,6 +251,11 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
             channelData[sample] = channelData[sample] * currentVolume; 
         }
     }
+
+    std::ofstream logFile ("C:\\Users\\chateaulaurent\\Documents\\ReMi\\log.csv", std::ios_base::app);
+    logFile << currentVolume << "\n";
+    logFile.close();
+
 }
 
 //==============================================================================
