@@ -10,8 +10,6 @@
       <FILE id="A0DVDT" name="HorizontalMeter.h" compile="0" resource="0"
             file="Source/Component/HorizontalMeter.h"/>
     </GROUP>
-    <FILE id="Wy9rZu" name="HorizontalMeter.h" compile="0" resource="0"
-          file="Source/HorizontalMeter.h"/>
     <FILE id="NRoXTN" name="PluginEditor.cpp" compile="1" resource="0"
           file="Source/PluginEditor.cpp"/>
     <FILE id="w090dV" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
