@@ -20,7 +20,9 @@ public:
     virtual ~ReservoirAudioFX() = default;
     ReservoirNetwork reservoir;
     std::vector<std::vector<float>> readout;
+    std::vector<float> readout_return;
     std::vector<float> reservoir_state;
+    std::vector<float> reservoir_state_return;
     float output = 0.0f;
     float old_output = 0.0f;
     float feedback_mix = 0.0f;
@@ -35,6 +37,8 @@ public:
     void reset(bool new_random_seed);
     float forward(int pattern);
     void decode_state();
+    std::vector<float> get_state();
+    std::vector<float> get_readout();
 
 
     void set_sr(float sr);

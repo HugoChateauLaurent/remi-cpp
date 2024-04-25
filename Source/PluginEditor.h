@@ -11,11 +11,12 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "Component/HorizontalMeter.h"
+#include "Component/State.h"
 
 //==============================================================================
 /**
 */
-class ReMiAudioProcessorEditor  : public juce::AudioProcessorEditor, public Timer
+class ReMiAudioProcessorEditor: public juce::AudioProcessorEditor, public Timer
 {
 public:
     ReMiAudioProcessorEditor (ReMiAudioProcessor&);
@@ -31,6 +32,7 @@ private:
     // access the processor object that created it.
     ReMiAudioProcessor& audioProcessor;
     Gui::HorizontalMeter horizontalMeter;
+    NeuronState::State state;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReMiAudioProcessorEditor)
 };

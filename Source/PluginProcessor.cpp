@@ -252,7 +252,7 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
         }
     }
 
-    std::ofstream logFile ("C:\\Users\\chateaulaurent\\Documents\\ReMi\\log.csv", std::ios_base::app);
+    std::ofstream logFile ("E:\\U-Bordeaux\\hackrob\\Remi\\log.csv", std::ios_base::app);
     logFile << currentVolume << "\n";
     logFile.close();
 
