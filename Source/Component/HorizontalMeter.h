@@ -100,8 +100,7 @@ namespace Gui
             }
             
         
-            
-           
+            //Initialize the queue
             if(open==true)
 	        {
 	            for(int i = 0 ; i < 150 ; i++)
@@ -130,15 +129,13 @@ namespace Gui
                 {
                     front = dataQueue.front();
                     dataQueue.pop_front(); // Remove oldest points if queue size exceeds maximum
-                    
-                    
                 }
             }
             
             
-            
             g.setColour(Colours::red);
             
+            //Normalize y axis
             float maxEle = 0;
             float minEle = dataQueue[0].y;
             
@@ -158,15 +155,12 @@ namespace Gui
 	            }
 	        }
             
-            
-            
-                //g.fillEllipse(point.x - 1, point.y - 1, 2, 2);
 
-            if(maxEle != minEle)
+            if(maxEle != minEle) 
             {
                 for (int i = dataQueue.size()-1 ; i < dataQueue.size() ; i--)
                 {
-                   //g.fillEllipse(((marginLeft)+(i/HZ)* width / displayTimeInSeconds) - 2, (marginTop+height)-((dataQueue[i].y- minEle) / (maxEle - minEle))*height - 2, 4, 4);
+                   
                     if(i == dataQueue.size()-1 )
                     {
                             
@@ -187,7 +181,6 @@ namespace Gui
              {
                 for (int i = dataQueue.size()-1 ; i < dataQueue.size() ; i--)
                 {
-                   //g.fillEllipse(((marginLeft)+(i/HZ)* width / displayTimeInSeconds) - 2, (marginTop+height)-((dataQueue[i].y- minEle) / (maxEle - minEle))*height - 2, 4, 4);
                     if(i == dataQueue.size()-1 )
                     {
                             
@@ -201,10 +194,8 @@ namespace Gui
                          ((marginLeft)+(i/HZ)* width / displayTimeInSeconds),dataQueue[i].y,2);
                     }
                         
-                 }
-                        
+                 }       
               }
-            
 	    }
 	    		
 		void setLevel(const float value) 
@@ -213,8 +204,6 @@ namespace Gui
 		    count++; 
 		}
 		
-		
-
 		
 		double HZ = 30.0;
         

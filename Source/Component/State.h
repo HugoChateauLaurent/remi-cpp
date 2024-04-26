@@ -8,21 +8,8 @@
   ==============================================================================
 */
 
-/*
-  ==============================================================================
-
-    HorizontalMeter.h
-    Created: 24 Feb 2024 2:04:05am
-    Author:  HomePC
-
-  ==============================================================================
-*/
-
 #pragma once
-
 #include <JuceHeader.h>
-#include "LockFreeQueue.h"
-
 
 namespace NeuronState
 {
@@ -32,6 +19,7 @@ namespace NeuronState
 
 	    State()
 	    {
+	       //Initialize 2D Vector Queue
 	       for (int i = 0; i < numLines; i++ )
             {
                 std::deque<float> line;
@@ -40,8 +28,7 @@ namespace NeuronState
                     line.push_back(0.f);
                 }
                 
-                lines.push_back(line);     
-                    
+                lines.push_back(line);            
             }
 	       
 	    }
@@ -53,7 +40,6 @@ namespace NeuronState
 	    	    
 	    void paint(Graphics& g) override
 	    {
-	        //g.fillAll(juce::Colours::white); 
             g.setColour(juce::Colours::white);
             
             // Set up drawing parameters
@@ -76,9 +62,8 @@ namespace NeuronState
             // Draw X and Y axis labels
             g.setFont(8.0f);
             g.drawText("Time (s)", getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2 - 10, 100, 20, juce::Justification::centred); // X axis label
-            g.drawText("Volume (Units)", marginLeft - 80, marginTop / 2 - 10, 100, 20, juce::Justification::centred, true); // Y axis label
+            g.drawText("State (Units)", marginLeft - 80, marginTop / 2 - 10, 100, 20, juce::Justification::centred, true); // Y axis label
             
-        
             
             // Draw X axis tick marks and labels
             for (int i = 0; i <= xTickCount; ++i)
@@ -103,13 +88,10 @@ namespace NeuronState
             
             
             
-            //g.drawText(juce::String(count), getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2, 100, 20, juce::Justification::centred);  
-            
-           
-            
-            
             if(state.size()!= 0 )
-	        {   /*
+	        {   
+	            
+	            /* Normalize
 	            float max = 0;
                 float min = color[0];
     
@@ -131,75 +113,55 @@ namespace NeuronState
                 }
                 */
 
-        
 	            
-	            
+	            // read state value for each line and put into queue
 	            for (int i = 0; i< lines.size(); i++)
                 {
-                
-                    
                     while (lines[i].size() > numPointsPerLine )
                     {
                         lines[i].pop_front(); // Remove oldest points if queue size exceeds maximum 
                     
                     }
                     lines[i].push_back(state[i]);
-                    
-                //g.drawText(juce::String(state.size()), getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2 - 30, 100, 20, juce::Justification::centred);  
-                
                 }
                 
                 //Draw 16 Lines
                 for (int j = lines[0].size()-1; j < lines[0].size(); j--)
                 {
-                    count_paint++;
-                 
-                
-                    g.setColour(Colours::blue);
                     for (int i = 0 ; i < lines.size() ; i++)
                     {
-                    //g.fillEllipse(((marginLeft)+(i/HZ)* width / displayTimeInSeconds) - 2, (marginTop+height)-((dataQueue[i].y- minEle) / (maxEle - minEle))*height - 2, 4, 4);
                         if(j == lines[i].size()-1 )
                         {
-                            g.setColour(Colour::fromHSV(color[i], 0.8f, 0.8f, 1.0f));     
+                            g.setColour(Colour::fromHSV(color[i], 0.8f, 0.8f, 1.0f)); // change color according to readout neuron activity value     
                             g.drawLine(((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,
                          ((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,2);
-                            g.drawText(juce::String(color[i]), getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2 - 30, 100, 20, juce::Justification::centred);  
                         }
                     
                         else
                         {
-                            g.setColour(Colour::fromHSV(color[i] , 0.8f, 0.8f, 1.0f)); 
+                            g.setColour(Colour::fromHSV(color[i] , 0.8f, 0.8f, 1.0f)); // change color according to readout neuron activity value
                             g.drawLine(((marginLeft)+((j+1)/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j+1]+1)/2)*height,
                          ((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,2);
-                        }
-                        
+                        } 
                     }
-                    
                 }
-                
-               
-	        
 	        }
-  
 	    }
 	    
+	    //receive neuron state
 	    void setState(std::vector<float> value) 
 		{ 
 		    state = value;
 		    count++; 
 		}
 		
+		//receave neuron activity level
 		void setColor(std::vector<float> value)
         {
            color = value;
         }
-		
-	
-
-		
-		double HZ = 30.0;
         
+        double HZ = 30.0;
         
 	private:
 		std::vector<float> state; 
@@ -208,13 +170,8 @@ namespace NeuronState
 		int count_paint = 0;
         float timeInSeconds = 0.f;
         static constexpr int maxDataPoints = 150; // Maximum number of data points to keep
-        
-        static constexpr int numLines = 16;
-        static constexpr int numPointsToShow = 30 * 5;
+        static constexpr int numLines = 16; // Number of neuron
         static constexpr int numPointsPerLine = 30 * 5; // 5 seconds at 30Hz
         std::vector<std::deque<float>> lines;
-        std::deque<Colour> colours;
-
-	
 	};
 }
