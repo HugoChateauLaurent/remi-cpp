@@ -78,9 +78,16 @@ ReMiAudioProcessor::ReMiAudioProcessor()
                                                             1,   // minimum value
                                                             3,   // maximum value
                                                             1)); // default value
+        addParameter (neuron_numbers = new juce::AudioParameterInt ("neuron_numbers", // parameterID
+                                                            "neuron_numbers", // parameter name
+                                                            1,   // minimum value
+                                                            64,   // maximum value
+                                                            16)); // default value
                                                             
                                                             
     }
+    
+    
     
 }
 
@@ -205,6 +212,8 @@ bool ReMiAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) con
 
 void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    reservoirFX.reservoir.units=*neuron_numbers;
+    
     auto numSamples = buffer.getNumSamples();
 
     juce::AudioPlayHead* playHead = getPlayHead();
@@ -223,14 +232,16 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     auto intervalDuration = static_cast<int>(samplesPerBeat / std::pow(2.0, division));
 
     time = (time + numSamples) % intervalDuration;
-
+    
     if ((time + numSamples) >= intervalDuration)
     {
         // currentVolume = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         currentVolume = reservoirFX.forward((pattern_parameter->get()) - 1);
         currentVolume = (currentVolume - min_volume_parameter->get()) / (max_volume_parameter->get() - min_volume_parameter->get());
         currentVolume = juce::jlimit(0.0f, 1.0f, currentVolume); // Ensure currentVolume is between 0 and 1
+     
     }
+
 
 
     juce::ScopedNoDenormals noDenormals;
@@ -241,6 +252,7 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     reservoirFX.outputGain=*outputGain_parameter;
     reservoirFX.feedback_mix=*feedback_mix_parameter;
     reservoirFX.reservoir.sr=*spectral_radius_parameter;
+    
     
     for (auto i = 0; i < totalNumOutputChannels; ++i)
     {

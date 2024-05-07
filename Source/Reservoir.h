@@ -39,7 +39,7 @@ public:
     void reset(bool new_random_seed);
     std::vector<float> forward(std::vector<float> x);
     std::vector<float> noise_gen(int size);
-
+    bool open = false;
 //private:
     
 };

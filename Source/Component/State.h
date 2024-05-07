@@ -16,7 +16,7 @@ namespace NeuronState
 	class State : public Component
 	{
 	public:
-
+	
 	    State()
 	    {
 	       //Initialize 2D Vector Queue
@@ -85,38 +85,21 @@ namespace NeuronState
                 g.drawLine(marginLeft - 5, y, marginLeft + 5, y);
                 g.drawText(juce::String((value * 2 -1), 2), marginLeft - 30, y - 10, 20, 20, juce::Justification::centredRight);
             }
+            //g.drawText(juce::String(state.size()),getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2 , 100, 20, juce::Justification::centred);
+            //g.drawText(juce::String(color.size()),getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2+10 , 100, 20, juce::Justification::centred);
             
+     
+      
             
-            
-            if(state.size()!= 0 )
+            if(state.size()== numLines && lines.size()==numLines && state.size()==lines.size())
 	        {   
+	            g.drawText(juce::String(state.size()),getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2+15 , 100, 20, juce::Justification::centred);
 	            
-	            /* Normalize
-	            float max = 0;
-                float min = color[0];
-    
-                for(int i = 0; i < color.size(); i++)
-                {
-                    if(color[i] > max)
-                    {
-                        max = color[i];
-                    }
-                }
-        
-                for(int i = 0; i < color.size(); i++)
-                {
-        
-                    if (color[i] < min)
-                    {
-                        min = color[i];
-                    }
-                }
-                */
-
 	            
-	            // read state value for each line and put into queue
+	            //read state value for each line and put into queue
 	            for (int i = 0; i< lines.size(); i++)
                 {
+                    
                     while (lines[i].size() > numPointsPerLine )
                     {
                         lines[i].pop_front(); // Remove oldest points if queue size exceeds maximum 
@@ -125,53 +108,97 @@ namespace NeuronState
                     lines[i].push_back(state[i]);
                 }
                 
+                
                 //Draw 16 Lines
                 for (int j = lines[0].size()-1; j < lines[0].size(); j--)
                 {
+                        
                     for (int i = 0 ; i < lines.size() ; i++)
                     {
+                        g.drawText(juce::String(lines.size()),getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2 , 100, 20, juce::Justification::centred);
                         if(j == lines[i].size()-1 )
                         {
+                            
                             g.setColour(Colour::fromHSV(color[i], 0.8f, 0.8f, 1.0f)); // change color according to readout neuron activity value     
                             g.drawLine(((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,
-                         ((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,2);
+                                ((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,2);
                         }
                     
-                        else
-                        {
-                            g.setColour(Colour::fromHSV(color[i] , 0.8f, 0.8f, 1.0f)); // change color according to readout neuron activity value
-                            g.drawLine(((marginLeft)+((j+1)/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j+1]+1)/2)*height,
-                         ((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,2);
-                        } 
+                       else
+                       {
+                           
+                           g.setColour(Colour::fromHSV(color[i] , 0.8f, 0.8f, 1.0f)); // change color according to readout neuron activity value
+                           g.drawLine(((marginLeft)+((j+1)/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j+1]+1)/2)*height,
+                                ((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,2);
+                       }  
+                       
                     }
                 }
-	        }
+                
+	        } 
+	        
 	    }
 	    
 	    //receive neuron state
 	    void setState(std::vector<float> value) 
 		{ 
+		    
 		    state = value;
 		    count++; 
 		}
 		
-		//receave neuron activity level
+		//receive neuron activity level
 		void setColor(std::vector<float> value)
         {
-           color = value;
+            
+            color = value;
         }
         
-        double HZ = 30.0;
+        //receive neuron numbers
+		bool get_neuron_numbers(int value)
+        {
+            if( value != numLines)
+            {
+
+                numLines = value;
+                count_paint=0;
+                set = 0;
+                neuron_change = true;
+                change = true;
+                
+            }
+            
+            else
+            {
+                if(change == true)
+                {
+                    count_paint++;
+                    neuron_change = false;
+                    numLines = value;
+                }
+                
+                
+            }
+            
+            return neuron_change;
+
+        }
+
         
-	private:
-		std::vector<float> state; 
-		std::vector<float> color; 
-		double count = 0;
-		int count_paint = 0;
-        float timeInSeconds = 0.f;
-        static constexpr int maxDataPoints = 150; // Maximum number of data points to keep
-        static constexpr int numLines = 16; // Number of neuron
-        static constexpr int numPointsPerLine = 30 * 5; // 5 seconds at 30Hz
+        double HZ = 30.0;
+        int set = 1;
+        int numLines = 16;
+        int count_paint = 0;
+        bool change = false;
+        bool neuron_change = false;
         std::vector<std::deque<float>> lines;
+        std::vector<float> state; 
+	private:
+		
+		std::vector<float> color; 
+		double count = 0; 
+        float timeInSeconds = 0.f;
+        int numPointsPerLine = 30 * 5; // 5 seconds at 30Hz
+        
 	};
 }

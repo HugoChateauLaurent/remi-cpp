@@ -24,15 +24,7 @@ float ReservoirAudioFX::forward(int pattern) {
     x[3] = feedback_mix * old_output;
     reservoir_state = reservoir.forward(x);
     reservoir_state_return = reservoir_state;
-    if(readout.size() != 0)
-    {
-        for (int j = 0; j < reservoir.units; ++j) {
-            if(readout.size() != 0)
-            {
-                readout_return.push_back(float(readout[j][0]));
-            }
-        } 
-    }
+    
     decode_state();
     
     output = 1 / (1 + exp(-output*outputGain)); // sigmoid to get [0,1]
@@ -56,7 +48,7 @@ void ReservoirAudioFX::decode_state() {
     // Reinitialize output
     output = 0.0f;
 
-    for (int j = 0; j < reservoir.units; ++j) {
+    for (int j = 0; j < reservoir_state.size(); ++j) {
        
         output += readout[j][0] * reservoir_state[j] / reservoir.units;
     }
@@ -71,7 +63,16 @@ void ReservoirAudioFX::initialize(bool new_random_seed) {
     }
     generator.seed(seed);
     SparseMatrixGenerator readoutGenerator(reservoir.units, 1, seed, true, 0.0f);
+    readout_return.clear();
     readout = readoutGenerator.generateSparseMatrix();
+    for (int j = 0; j < reservoir.units; ++j) 
+    {
+        if(readout.size() != 0)
+        {
+            readout_return.push_back(float(readout[j][0]));
+        }
+    } 
+    
     output = 0.0f;
 }
 

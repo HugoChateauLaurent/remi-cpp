@@ -21,10 +21,10 @@
           file="Source/PluginProcessor.h"/>
     <FILE id="yWuTQC" name="Reservoir.cpp" compile="1" resource="0" file="Source/Reservoir.cpp"/>
     <FILE id="xG9Mbn" name="Reservoir.h" compile="0" resource="0" file="Source/Reservoir.h"/>
-    <FILE id="S95SpW" name="ReservoirAudioFX.cpp" compile="1" resource="0"
-          file="Source/ReservoirAudioFX.cpp"/>
     <FILE id="kL95nI" name="ReservoirAudioFX.h" compile="0" resource="0"
           file="Source/ReservoirAudioFX.h"/>
+    <FILE id="S95SpW" name="ReservoirAudioFX.cpp" compile="1" resource="0"
+          file="Source/ReservoirAudioFX.cpp"/>
     <FILE id="siiun3" name="SparseMatrixGenerator.cpp" compile="1" resource="0"
           file="Source/SparseMatrixGenerator.cpp"/>
     <FILE id="kIfZXt" name="SparseMatrixGenerator.h" compile="0" resource="0"
