@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="kUEARs" name="ReMi" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginFormats="buildVST3" pluginManufacturer="ReMi" pluginManufacturerCode="ReMi"
-              aaxIdentifier="com.ReMi.ReMi" bundleIdentifier="com.ReMi.ReMi"
-              headerPath="C:\Users\HomePC\source\repos\remi-cpp\">
-  <MAINGROUP id="SIR8ad" name="ReMi">
+<JUCERPROJECT id="kUEARs" name="ReMi LFO" projectType="audioplug" useAppConfig="0"
+              displaySplashScreen="1" jucerFormatVersion="1" pluginFormats="buildVST3"
+              pluginManufacturer="ReMi LFO" pluginManufacturerCode="ReMi" aaxIdentifier="com.ReMi.ReMi"
+              bundleIdentifier="com.ReMi.ReMi" headerPath="C:\Users\HomePC\source\repos\remi-cpp\eigen-3.4.0"
+              companyWebsite="remi-audio.com">
+  <MAINGROUP id="SIR8ad" name="ReMi LFO">
+    <GROUP id="{A3830032-0CF3-B4B0-D6AA-DC040E2DCA25}" name="Component">
+      <FILE id="A0DVDT" name="HorizontalMeter.h" compile="0" resource="0"
+            file="Source/Component/HorizontalMeter.h"/>
+      <FILE id="oF0wNB" name="LockFreeQueue.h" compile="0" resource="0" file="Source/Component/LockFreeQueue.h"/>
+      <FILE id="qLuwd1" name="State.h" compile="0" resource="0" file="Source/Component/State.h"/>
+    </GROUP>
     <FILE id="NRoXTN" name="PluginEditor.cpp" compile="1" resource="0"
           file="Source/PluginEditor.cpp"/>
     <FILE id="w090dV" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
@@ -15,12 +21,14 @@
           file="Source/PluginProcessor.h"/>
     <FILE id="yWuTQC" name="Reservoir.cpp" compile="1" resource="0" file="Source/Reservoir.cpp"/>
     <FILE id="xG9Mbn" name="Reservoir.h" compile="0" resource="0" file="Source/Reservoir.h"/>
-    <FILE id="S95SpW" name="ReservoirAudioFX.cpp" compile="1" resource="0"
-          file="Source/ReservoirAudioFX.cpp"/>
     <FILE id="kL95nI" name="ReservoirAudioFX.h" compile="0" resource="0"
           file="Source/ReservoirAudioFX.h"/>
-    <FILE id="WcU5Gv" name="utils.cpp" compile="1" resource="0" file="Source/utils.cpp"/>
-    <FILE id="zA9FHy" name="utils.h" compile="0" resource="0" file="Source/utils.h"/>
+    <FILE id="S95SpW" name="ReservoirAudioFX.cpp" compile="1" resource="0"
+          file="Source/ReservoirAudioFX.cpp"/>
+    <FILE id="siiun3" name="SparseMatrixGenerator.cpp" compile="1" resource="0"
+          file="Source/SparseMatrixGenerator.cpp"/>
+    <FILE id="kIfZXt" name="SparseMatrixGenerator.h" compile="0" resource="0"
+          file="Source/SparseMatrixGenerator.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>

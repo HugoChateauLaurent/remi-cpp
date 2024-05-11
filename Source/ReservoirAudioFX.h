@@ -11,19 +11,23 @@
 #pragma once
 
 #include "Reservoir.h"
+#include "SparseMatrixGenerator.h"
 
 
 class ReservoirAudioFX {
 public:
     ReservoirAudioFX();
     virtual ~ReservoirAudioFX() = default;
-    Reservoir reservoir;
-    Eigen::SparseMatrix<float> readout;
-    Eigen::VectorXf reservoir_state;
+    ReservoirNetwork reservoir;
+    std::vector<std::vector<float>> readout;
+    std::vector<float> readout_return;
+    std::vector<float> reservoir_state;
+    std::vector<float> reservoir_state_return;
     float output = 0.0f;
-    float readout_connectivity = 0.1f;
+    float old_output = 0.0f;
+    float feedback_mix = 0.0f;
     
-    unsigned seed;
+    int seed;
 
     
     std::default_random_engine generator;        // Random number generator
@@ -31,8 +35,10 @@ public:
 
     void initialize(bool new_random_seed);
     void reset(bool new_random_seed);
-    float forward(float sample);
+    float forward(int pattern);
     void decode_state();
+    std::vector<float> get_state();
+    std::vector<float> get_readout();
 
 
     void set_sr(float sr);
