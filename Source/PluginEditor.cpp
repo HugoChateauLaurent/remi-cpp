@@ -25,11 +25,9 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
     addAndMakeVisible(horizontalMeter); 
     addAndMakeVisible(state);
     addAndMakeVisible(resetButton);
-    state.setBounds(0,0,800,300);
 
-    
+    //show state plot button
     resetButton.setButtonText ("Plot");
-    //juce::Graphics::setFont(8.0f);
     resetButton.setCentrePosition(750,250);
     resetButton.setSize (40, 30);
     resetButton.onClick = [this] {plot_state();}; 
@@ -72,19 +70,13 @@ void ReMiAudioProcessorEditor::timerCallback()
         
         state.set = 0;
         state.numLines = audioProcessor.reservoirFX.reservoir.units;
-
-        
         reset();
-     
-        
-        
 
     }
     
     else if(show_state == true)
     {
             
-        //state.numLines = audioProcessor.reservoirFX.reservoir.units;
         state.setOpaque(false);
         state.setVisible(true);
         horizontalMeter.setEnabled(true);
@@ -117,12 +109,13 @@ void ReMiAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     horizontalMeter.setBounds(getLocalBounds());
-    //state.setBounds(getLocalBounds());
+    state.setBounds(getLocalBounds());
 
 }
 
 void ReMiAudioProcessorEditor::reset()
 {
+        
         *audioProcessor.input_scaling_parameter = 1.0;
         *audioProcessor.feedback_mix_parameter = 0.0;
         *audioProcessor.outputGain_parameter = 1.0;
@@ -136,6 +129,7 @@ void ReMiAudioProcessorEditor::reset()
         audioProcessor.reservoirFX.initialize(true); 
         audioProcessor.reservoirFX.reservoir.initialize(true);
         
+        //reset 2D queue in state plot
         state.state.clear();
         state.lines.clear();
 	            
@@ -159,6 +153,7 @@ void ReMiAudioProcessorEditor::reset()
 
 void ReMiAudioProcessorEditor::plot_state()
 {
+        //show state plot or not
 
         if(show_state == false)
         {
@@ -167,7 +162,6 @@ void ReMiAudioProcessorEditor::plot_state()
         else
         {
             show_state = false;
-        
         }
 }
 
