@@ -25,11 +25,9 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
     addAndMakeVisible(horizontalMeter); 
     addAndMakeVisible(state);
     addAndMakeVisible(resetButton);
-    state.setBounds(0,0,800,300);
 
     
     resetButton.setButtonText ("Plot");
-    //juce::Graphics::setFont(8.0f);
     resetButton.setCentrePosition(750,250);
     resetButton.setSize (40, 30);
     resetButton.onClick = [this] {plot_state();}; 
@@ -37,6 +35,7 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
     
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
+    
     setSize (800, 300);
     
     startTimerHz(horizontalMeter.HZ);
@@ -60,40 +59,29 @@ void ReMiAudioProcessorEditor::timerCallback()
     horizontalMeter.setEnabled(false);
     state.setVisible(false);
     state.setEnabled(false);
-    state.state = audioProcessor.reservoirFX.reservoir_state;
-    state.setColor(audioProcessor.reservoirFX.get_readout());
+    //state.state = audioProcessor.reservoirFX.reservoir_state;
+    //state.setColor(audioProcessor.reservoirFX.get_readout());
 
-    state.repaint();
+    //state.repaint();
     
 
     if (state.neuron_change == true)
     {
-        
-        
+
         state.set = 0;
         state.numLines = audioProcessor.reservoirFX.reservoir.units;
-
-        
         reset();
-     
-        
-        
-
     }
     
     else if(show_state == true)
     {
-            
-        //state.numLines = audioProcessor.reservoirFX.reservoir.units;
         state.setOpaque(false);
         state.setVisible(true);
         horizontalMeter.setEnabled(true);
         state.setEnabled(true);
-        state.state = audioProcessor.reservoirFX.reservoir_state;
-        state.setColor(audioProcessor.reservoirFX.get_readout());
-        state.repaint();
-
-
+        //state.state = audioProcessor.reservoirFX.reservoir_state;
+        //state.setColor(audioProcessor.reservoirFX.get_readout());
+        //state.repaint();
     }
     
     
@@ -117,7 +105,7 @@ void ReMiAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     horizontalMeter.setBounds(getLocalBounds());
-    //state.setBounds(getLocalBounds());
+    state.setBounds(getLocalBounds());
 
 }
 
@@ -167,7 +155,6 @@ void ReMiAudioProcessorEditor::plot_state()
         else
         {
             show_state = false;
-        
         }
 }
 

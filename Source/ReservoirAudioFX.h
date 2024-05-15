@@ -21,10 +21,10 @@ public:
     ReservoirNetwork reservoir;
     std::vector<std::vector<float>> readout;
     std::vector<float> readout_return;
-    std::vector<float> reservoir_state;
+    std::vector<std::vector<float>> reservoir_state;    
     std::vector<float> reservoir_state_return;
-    float output = 0.0f;
-    float old_output = 0.0f;
+    std::vector<float> output;                          //change to 1D vector
+    std::vector<float> old_output;                      //change to 1D vector
     float feedback_mix = 0.0f;
     
     int seed;
@@ -35,8 +35,9 @@ public:
 
     void initialize(bool new_random_seed);
     void reset(bool new_random_seed);
-    float forward(int pattern);
-    void decode_state();
+    std::vector<float> forward(int pattern);
+    //void decode_state();
+    float decode_state(int i, std::vector<float> reservoir_state);
     std::vector<float> get_state();
     std::vector<float> get_readout();
 

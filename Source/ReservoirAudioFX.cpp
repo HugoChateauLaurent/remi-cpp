@@ -18,18 +18,24 @@ ReservoirAudioFX::ReservoirAudioFX() : reservoir(4) {
     initialize(true);
 }
 
-float ReservoirAudioFX::forward(int pattern) {
-    std::vector<float> x(4);
-    x[pattern] = 1;
-    x[3] = feedback_mix * old_output;
-    reservoir_state = reservoir.forward(x);
-    reservoir_state_return = reservoir_state;
+std::vector<float> ReservoirAudioFX::forward(int pattern) {
+    reservoir_state.clear();
+    for(int i = 0; i < old_output.size(); i++)
+    {
+        
+        std::vector<float> x(4);
+        x[pattern] = 1;
+        x[3] = feedback_mix * old_output[i];
+        reservoir_state.push_back(reservoir.forward(x));
+        //reservoir_state_return = reservoir_state;
+        
+        output[i] = decode_state(i,reservoir_state[i]);
     
-    decode_state();
-    
-    output = 1 / (1 + exp(-output*outputGain)); // sigmoid to get [0,1]
-    old_output = output;
-    return static_cast<float>(output);
+        output[i] = 1 / (1 + exp(-output[i]*outputGain)); // sigmoid to get [0,1]
+        old_output[i] = output[i];
+    }
+
+    return output;
 }
 
 std::vector<float> ReservoirAudioFX::get_state() {
@@ -43,15 +49,27 @@ std::vector<float> ReservoirAudioFX::get_readout() {
     return readout_return;
 }
 
-void ReservoirAudioFX::decode_state() {
+float ReservoirAudioFX::decode_state(int i, std::vector<float> reservoir_state) {
 
     // Reinitialize output
-    output = 0.0f;
-
-    for (int j = 0; j < reservoir_state.size(); ++j) {
+    float out = 0.0f;
+    if(reservoir.units < reservoir_state.size())
+    {
+        for (int j = 0; j < reservoir.units; ++j) {
        
-        output += readout[j][0] * reservoir_state[j] / reservoir.units;
+            out += readout[j][i] * reservoir_state[j] / reservoir.units;
+        }
+    
     }
+    else
+    {
+
+        for (int j = 0; j < reservoir_state.size(); ++j) {
+       
+            out += readout[j][i] * reservoir_state[j] / reservoir.units;
+        }
+    }
+    return out;
 }
 
 
@@ -62,9 +80,10 @@ void ReservoirAudioFX::initialize(bool new_random_seed) {
         srand(seed); // set seed of random generation
     }
     generator.seed(seed);
-    SparseMatrixGenerator readoutGenerator(reservoir.units, 1, seed, true, 0.0f);
+    SparseMatrixGenerator readoutGenerator(reservoir.units, 3, seed, true, 0.0f);//
     readout_return.clear();
     readout = readoutGenerator.generateSparseMatrix();
+    /*
     for (int j = 0; j < reservoir.units; ++j) 
     {
         if(readout.size() != 0)
@@ -72,8 +91,9 @@ void ReservoirAudioFX::initialize(bool new_random_seed) {
             readout_return.push_back(float(readout[j][0]));
         }
     } 
-    
-    output = 0.0f;
+    */
+    output.resize(3, 0.0f);
+    old_output.resize(3, 0.0f);
 }
 
 

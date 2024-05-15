@@ -83,9 +83,12 @@ ReMiAudioProcessor::ReMiAudioProcessor()
                                                             1,   // minimum value
                                                             64,   // maximum value
                                                             16)); // default value
-                                                            
+                                                  
                                                             
     }
+    
+    
+    
     
     
     
@@ -169,9 +172,21 @@ void ReMiAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     // *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 2000.0f);//5.0f);
     // highPassFilter.prepare(spec);
 
-    currentVolume = 0.0f;
+    currentVolume.resize(3,0.f);
     time = 0;
     rateValue = static_cast<float>(sampleRate); // Initialize rateValue with sampleRate
+    
+    juce::dsp::ProcessSpec spec;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.sampleRate = sampleRate;
+    spec.numChannels = getTotalNumOutputChannels();
+    
+    low_frequency.prepare(spec);
+    mid_frequency.prepare(spec);
+    high_frequency.prepare(spec);
+    low_frequency.setFrequency(500.f);
+    mid_frequency.setFrequency(2000.f);
+    high_frequency.setFrequency(10000.f);
  
 
     
@@ -237,8 +252,13 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     {
         // currentVolume = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         currentVolume = reservoirFX.forward((pattern_parameter->get()) - 1);
-        currentVolume = (currentVolume - min_volume_parameter->get()) / (max_volume_parameter->get() - min_volume_parameter->get());
-        currentVolume = juce::jlimit(0.0f, 1.0f, currentVolume); // Ensure currentVolume is between 0 and 1
+        
+        for(int i = 0; i < currentVolume.size(); i++)
+        {
+            currentVolume[i] = (currentVolume[i] - min_volume_parameter->get()) / (max_volume_parameter->get() - min_volume_parameter->get());
+            currentVolume[i] = juce::jlimit(0.0f, 1.0f, currentVolume[i]); // Ensure currentVolume is between 0 and 1
+        }
+        
      
     }
 
@@ -253,20 +273,28 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     reservoirFX.feedback_mix=*feedback_mix_parameter;
     reservoirFX.reservoir.sr=*spectral_radius_parameter;
     
-    
+    juce::dsp::AudioBlock<float> audioblock{buffer};
+    //low_frequency.process(juce::dsp::ProcessContextReplacing <float>(audioblock));
+    //mid_frequency.process(juce::dsp::ProcessContextReplacing <float>(audioblock));
+    //high_frequency.process(juce::dsp::ProcessContextReplacing <float>(audioblock));
+
     for (auto i = 0; i < totalNumOutputChannels; ++i)
     {
         auto* channelData = buffer.getWritePointer(i);
         
         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         {
-            channelData[sample] = channelData[sample] * currentVolume; 
+            //channelData[sample] = channelData[sample] * currentVolume;
+            channelData[sample] = low_frequency.processSample(channelData[sample])* currentVolume[0] 
+            +mid_frequency.processSample(channelData[sample]) * currentVolume[1]
+            +high_frequency.processSample(channelData[sample])* currentVolume[2];
+            //channelData[sample] = (high_frequency.processSample(channelData[sample]))* currentVolume; 
         }
     }
 
-    std::ofstream logFile ("E:\\U-Bordeaux\\hackrob\\Remi\\log.csv", std::ios_base::app);
-    logFile << currentVolume << "\n";
-    logFile.close();
+    //std::ofstream logFile ("E:\\U-Bordeaux\\hackrob\\Remi\\log.csv", std::ios_base::app);
+    //logFile << currentVolume << "\n";
+    //logFile.close();
 
 }
 
@@ -300,7 +328,7 @@ void ReMiAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 
 float ReMiAudioProcessor::getModulationValue() const
 {
-    return currentVolume;
+    return currentVolume[1];
 }
 
 //==============================================================================

@@ -179,6 +179,7 @@ namespace Gui
                  
              else
              {
+                
                 for (int i = dataQueue.size()-1 ; i < dataQueue.size() ; i--)
                 {
                     if(i == dataQueue.size()-1 )
@@ -190,6 +191,7 @@ namespace Gui
                     
                     else
                     {
+                       g.drawText(juce::String(dataQueue[i].y), getWidth() / 4 - 50, getHeight() - marginBottom / 2 - 10, 100, 20, juce::Justification::centred); // X axis label 
                        g.drawLine(((marginLeft)+((i+1)/HZ)* width / displayTimeInSeconds),dataQueue[i+1].y,
                          ((marginLeft)+(i/HZ)* width / displayTimeInSeconds),dataQueue[i].y,2);
                     }

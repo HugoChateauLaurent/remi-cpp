@@ -85,15 +85,11 @@ namespace NeuronState
                 g.drawLine(marginLeft - 5, y, marginLeft + 5, y);
                 g.drawText(juce::String((value * 2 -1), 2), marginLeft - 30, y - 10, 20, 20, juce::Justification::centredRight);
             }
-            //g.drawText(juce::String(state.size()),getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2 , 100, 20, juce::Justification::centred);
-            //g.drawText(juce::String(color.size()),getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2+10 , 100, 20, juce::Justification::centred);
-            
      
       
             
             if(state.size()== numLines && lines.size()==numLines && state.size()==lines.size())
 	        {   
-	            g.drawText(juce::String(state.size()),getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2+15 , 100, 20, juce::Justification::centred);
 	            
 	            
 	            //read state value for each line and put into queue
@@ -115,7 +111,6 @@ namespace NeuronState
                         
                     for (int i = 0 ; i < lines.size() ; i++)
                     {
-                        g.drawText(juce::String(lines.size()),getWidth()*3 / 4 - 50, getHeight() - marginBottom / 2 , 100, 20, juce::Justification::centred);
                         if(j == lines[i].size()-1 )
                         {
                             

@@ -72,7 +72,7 @@ public:
     juce::AudioParameterInt* pattern_parameter;
     juce::AudioParameterInt* neuron_numbers;
     
-    float currentVolume;
+    std::vector<float> currentVolume; //change to a vector
     int count = 0;
 
 private:
@@ -92,6 +92,11 @@ private:
     };
     int time;
     float rateValue; // Updated variable type
+    
+    juce::dsp::Oscillator<float> low_frequency{[](float x) {return std::sin(x);}};
+    juce::dsp::Oscillator<float> mid_frequency{[](float x) {return std::sin(x);}};
+    juce::dsp::Oscillator<float> high_frequency{[](float x) {return std::sin(x);}};
+    
 
     // juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> highPassFilter;
     
