@@ -11,7 +11,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "LockFreeQueue.h"
 
 
 namespace Gui
@@ -47,7 +46,7 @@ namespace Gui
 	    
 	    void paint(Graphics& g) override
 	    {
-	        g.fillAll(juce::Colours::black); 
+	        g.fillAll(juce::Colour::fromHSL(0.0f,0.0f,0.1f,1.0f)); 
             g.setColour(juce::Colours::white);
             
             // Set up drawing parameters
@@ -59,9 +58,9 @@ namespace Gui
             int height = getHeight() - marginTop - marginBottom;
             int xTickCount = 10; // Number of tick marks on X axis
             int yTickCount = 10; // Number of tick marks on Y axis
-            float displayTimeInSeconds = 5; //Display for 5 second
+            float displayTimeInSeconds = maxDataPoints/HZ; //Display for 5 second
             
-            
+            /*
             // Draw X and Y axis
             g.setColour(juce::Colours::white);
             g.drawLine(marginLeft, marginTop + height, marginLeft + width, marginTop + height, 2); // X axis
@@ -70,7 +69,7 @@ namespace Gui
             // Draw X and Y axis labels
             g.setFont(8.0f);
             g.drawText("Time (s)", getWidth() / 4 - 50, getHeight() - marginBottom / 2 - 10, 100, 20, juce::Justification::centred); // X axis label
-            g.drawText("Volume (Units)", marginLeft / 2 - 50, marginTop / 2 - 10, 100, 20, juce::Justification::centred, true); // Y axis label
+            g.drawText("Output", marginLeft / 2 - 50, marginTop / 2 - 10, 100, 20, juce::Justification::centred, true); // Y axis label
             
         
             
@@ -98,7 +97,7 @@ namespace Gui
                 g.drawText(juce::String(value, 2), marginLeft - 30, y - 10, 20, 20, juce::Justification::centredRight);
 
             }
-            
+            */
         
             //Initialize the queue
             if(open==true)
@@ -117,23 +116,15 @@ namespace Gui
 	        
 	        juce::Point<float> point(x_current, y_current);
 	        
-	        data.produce(point);
-	        
-            if (data.consume(point)) // Consume a point from the queue
+	        dataQueue.push_back(point);
+	        while (dataQueue.size() > maxDataPoints)
             {
-                juce::ScopedLock sl(dataLock);
-                dataQueue.push_back(point);
-                
-
-                while (dataQueue.size() > maxDataPoints)
-                {
-                    front = dataQueue.front();
-                    dataQueue.pop_front(); // Remove oldest points if queue size exceeds maximum
-                }
+                front = dataQueue.front();
+                dataQueue.pop_front(); // Remove oldest points if queue size exceeds maximum
             }
-            
-            
-            g.setColour(Colours::red);
+	        
+
+            g.setColour(juce::Colour::fromHSL(0.12f,0.97f,0.45f,1.0f));
             
             //Normalize y axis
             float maxEle = 0;
@@ -165,13 +156,13 @@ namespace Gui
                     {
                             
                        g.drawLine(((marginLeft)+(i/HZ)* width / displayTimeInSeconds),(marginTop+height)-((dataQueue[i].y- minEle) / (maxEle - minEle))*height,
-                         ((marginLeft)+(i/HZ)* width / displayTimeInSeconds),(marginTop+height)-((dataQueue[i].y- minEle) / (maxEle - minEle))*height,2);
+                         ((marginLeft)+(i/HZ)* width / displayTimeInSeconds),(marginTop+height)-((dataQueue[i].y- minEle) / (maxEle - minEle))*height,2.5);
                     }
                     
                     else
                     {
                        g.drawLine(((marginLeft)+((i+1)/HZ)* width / displayTimeInSeconds),(marginTop+height)-((dataQueue[i+1].y- minEle) / (maxEle - minEle))*height,
-                         ((marginLeft)+(i/HZ)* width / displayTimeInSeconds),(marginTop+height)-((dataQueue[i].y- minEle) / (maxEle - minEle))*height,2);
+                         ((marginLeft)+(i/HZ)* width / displayTimeInSeconds),(marginTop+height)-((dataQueue[i].y- minEle) / (maxEle - minEle))*height,2.5);
                     }
                         
                  }
@@ -185,13 +176,13 @@ namespace Gui
                     {
                             
                        g.drawLine(((marginLeft)+(i/HZ)* width / displayTimeInSeconds),dataQueue[i].y,
-                         ((marginLeft)+(i/HZ)* width / displayTimeInSeconds),dataQueue[i].y,2);
+                         ((marginLeft)+(i/HZ)* width / displayTimeInSeconds),dataQueue[i].y,2.5);
                     }
                     
                     else
                     {
                        g.drawLine(((marginLeft)+((i+1)/HZ)* width / displayTimeInSeconds),dataQueue[i+1].y,
-                         ((marginLeft)+(i/HZ)* width / displayTimeInSeconds),dataQueue[i].y,2);
+                         ((marginLeft)+(i/HZ)* width / displayTimeInSeconds),dataQueue[i].y,2.5);
                     }
                         
                  }       
@@ -206,7 +197,7 @@ namespace Gui
 		
 		
 		double HZ = 30.0;
-        
+        int maxDataPoints = 150; // Maximum number of data points to keep
         
 	private:
 		float level = 0.f; 
@@ -218,11 +209,9 @@ namespace Gui
         float y_last = 0.f;
         bool open = false;
         float timeInSeconds = 0.f;
-        LockFreeQueue<juce::Point<float>> data;
-        juce::CriticalSection dataLock;
         std::deque<juce::Point<float>> dataQueue;
         juce::Point<float> front;
-        static constexpr int maxDataPoints = 150; // Maximum number of data points to keep
+        
 	
 	};
 }

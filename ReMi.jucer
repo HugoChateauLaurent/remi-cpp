@@ -9,7 +9,6 @@
     <GROUP id="{A3830032-0CF3-B4B0-D6AA-DC040E2DCA25}" name="Component">
       <FILE id="A0DVDT" name="HorizontalMeter.h" compile="0" resource="0"
             file="Source/Component/HorizontalMeter.h"/>
-      <FILE id="oF0wNB" name="LockFreeQueue.h" compile="0" resource="0" file="Source/Component/LockFreeQueue.h"/>
       <FILE id="qLuwd1" name="State.h" compile="0" resource="0" file="Source/Component/State.h"/>
     </GROUP>
     <FILE id="NRoXTN" name="PluginEditor.cpp" compile="1" resource="0"

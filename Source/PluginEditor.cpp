@@ -47,6 +47,7 @@ ReMiAudioProcessorEditor::~ReMiAudioProcessorEditor()
 
 void ReMiAudioProcessorEditor::timerCallback()
 {
+    horizontalMeter.maxDataPoints =  *audioProcessor.display_time*horizontalMeter.HZ;
     
     horizontalMeter.setLevel(audioProcessor.getModulationValue());
     horizontalMeter.repaint();

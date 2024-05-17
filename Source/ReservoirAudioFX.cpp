@@ -65,6 +65,8 @@ void ReservoirAudioFX::initialize(bool new_random_seed) {
     SparseMatrixGenerator readoutGenerator(reservoir.units, 1, seed, true, 0.0f);
     readout_return.clear();
     readout = readoutGenerator.generateSparseMatrix();
+    
+    
     for (int j = 0; j < reservoir.units; ++j) 
     {
         if(readout.size() != 0)
