@@ -71,6 +71,7 @@ public:
     juce::AudioParameterInt* rate_parameter;
     juce::AudioParameterInt* pattern_parameter;
     juce::AudioParameterInt* neuron_numbers;
+    juce::AudioParameterInt* display_time;
     
     float currentVolume;
     int count = 0;

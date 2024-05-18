@@ -83,6 +83,11 @@ ReMiAudioProcessor::ReMiAudioProcessor()
                                                             1,   // minimum value
                                                             64,   // maximum value
                                                             16)); // default value
+        addParameter (display_time = new juce::AudioParameterInt ("display_time", // parameterID
+                                                            "display_time", // parameter name
+                                                            1,   // minimum value
+                                                            10,   // maximum value
+                                                            5)); // default value
                                                             
                                                             
     }
