@@ -287,26 +287,135 @@ juce::AudioProcessorEditor* ReMiAudioProcessor::createEditor()
 }
 
 //==============================================================================
-void ReMiAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
-{
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
-
-}
-
-void ReMiAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
-{
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
-
-
-}
 
 float ReMiAudioProcessor::getModulationValue() const
 {
     return currentVolume;
 }
+
+
+void ReMiAudioProcessor::addArrayToXml(XmlElement* xml, const String& arrayName, const std::vector<std::vector<float>>& array)
+{
+    XmlElement* arrayElement = xml->createNewChildElement(arrayName);
+    for (const auto& row : array)
+    {
+        XmlElement* rowElement = arrayElement->createNewChildElement("Row");
+        for (float value : row)
+        {
+            rowElement->createNewChildElement("Value")->setAttribute("val", value);
+        }
+    }
+}
+
+void ReMiAudioProcessor::addArrayToXml(XmlElement* xml, const String& arrayName, const std::vector<float>& array)
+{
+    XmlElement* arrayElement = xml->createNewChildElement(arrayName);
+    for (float value : array)
+    {
+        arrayElement->createNewChildElement("Value")->setAttribute("val", value);
+    }
+}
+
+void ReMiAudioProcessor::loadArrayFromXml(XmlElement* xml, const String& arrayName, std::vector<std::vector<float>>& array)
+{
+    std::vector<std::vector<float>> array_temp;
+    
+    if (auto* arrayElement = xml->getChildByName(arrayName))
+    {
+        //array.clear();
+        for (auto* rowElement : arrayElement->getChildIterator())
+        {
+            std::vector<float> row;
+            for (auto* valueElement : rowElement->getChildIterator())
+            {
+                row.push_back(valueElement->getDoubleAttribute("val"));
+            }
+            array_temp.push_back(row);
+        }
+    }
+    array = array_temp;
+}
+
+void ReMiAudioProcessor::loadArrayFromXml(XmlElement* xml, const String& arrayName, std::vector<float>& array)
+{
+    std::vector<float>array_temp;
+    
+    if (auto* arrayElement = xml->getChildByName(arrayName))
+    {
+        
+        //array.clear();
+        for (auto* valueElement : arrayElement->getChildIterator())
+        {
+            array_temp.push_back(valueElement->getDoubleAttribute("val"));
+        }
+    }
+    array = array_temp;
+}
+
+void ReMiAudioProcessor::getStateInformation (MemoryBlock& destData) 
+{
+    // Create an XML element for the state
+    std::unique_ptr<XmlElement> xml (new XmlElement("state"));
+
+    // Add parameter state
+    xml->setAttribute("input_scaling_parameter",*input_scaling_parameter);
+    xml->setAttribute("feedback_mix_parameter", *feedback_mix_parameter);
+    xml->setAttribute("outputGain_parameter",*outputGain_parameter);
+    xml->setAttribute("min_volume_parameter", *min_volume_parameter);
+    xml->setAttribute("max_volume_parameter", *max_volume_parameter);
+    xml->setAttribute("leak_rate_parameter", *leak_rate_parameter);
+    xml->setAttribute("spectral_radius_parameter",*spectral_radius_parameter);
+    xml->setAttribute("rate_parameter", *rate_parameter);
+    xml->setAttribute("pattern_parameter", *pattern_parameter);
+    xml->setAttribute("neuron_numbers", *neuron_numbers);
+    xml->setAttribute("Old_output", reservoirFX.old_output);
+
+    // Add custom data to XML
+    addArrayToXml(xml.get(), "W", reservoirFX.reservoir.W);
+    addArrayToXml(xml.get(), "Win", reservoirFX.reservoir.Win);
+    addArrayToXml(xml.get(), "State", reservoirFX.reservoir_state);
+    addArrayToXml(xml.get(), "Readout", reservoirFX.get_readout());
+
+    // Convert XML to binary
+    copyXmlToBinary(*xml, destData);
+}
+
+void ReMiAudioProcessor::setStateInformation (const void* data, int sizeInBytes) 
+{
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState != nullptr)
+    {
+        // Check if the XML contains our parameters state
+        if (xmlState->hasTagName("state"))
+        {
+            
+            *input_scaling_parameter = xmlState->getDoubleAttribute("input_scaling_parameter");
+            *feedback_mix_parameter = xmlState->getDoubleAttribute("feedback_mix_parameter");
+            *outputGain_parameter = xmlState->getDoubleAttribute("outputGain_parameter");
+            *min_volume_parameter = xmlState->getDoubleAttribute("min_volume_parameter");
+            *max_volume_parameter = xmlState->getDoubleAttribute("max_volume_parameter");
+            *leak_rate_parameter = xmlState->getDoubleAttribute("leak_rate_parameter");
+            *spectral_radius_parameter = xmlState->getDoubleAttribute("spectral_radius_parameter");
+            *rate_parameter = xmlState->getDoubleAttribute("rate_parameter");
+            *pattern_parameter = xmlState->getDoubleAttribute("pattern_parameter");
+            *neuron_numbers = xmlState->getDoubleAttribute("neuron_numbers");
+            reservoirFX.old_output  = xmlState->getDoubleAttribute("Old_output");
+
+            // Load custom data from XML
+            loadArrayFromXml(xmlState.get(), "W", reservoirFX.reservoir.W);
+            loadArrayFromXml(xmlState.get(), "Win", reservoirFX.reservoir.Win);
+            loadArrayFromXml(xmlState.get(), "State", reservoirFX.reservoir_state);
+            loadArrayFromXml(xmlState.get(), "Readout", reservoirFX.get_readout());
+
+        }
+    }
+}
+
+
+
+
+
 
 //==============================================================================
 // This creates new instances of the plugin..

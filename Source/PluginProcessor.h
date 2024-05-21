@@ -52,11 +52,19 @@ public:
     void setCurrentProgram (int index) override;
     const juce::String getProgramName (int index) override;
     void changeProgramName (int index, const juce::String& newName) override;
-
-    //==============================================================================
-    void getStateInformation (juce::MemoryBlock& destData) override;
+    
+    void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+
+    //=============================================================================
+    
+    void addArrayToXml(XmlElement* xml, const String& arrayName, const std::vector<std::vector<float>>& array);
+    void addArrayToXml(XmlElement* xml, const String& arrayName, const std::vector<float>& array);
+    void loadArrayFromXml(XmlElement* xml, const String& arrayName, std::vector<std::vector<float>>& array);
+    void loadArrayFromXml(XmlElement* xml, const String& arrayName, std::vector<float>& array);
+    
+    
     ReservoirAudioFX reservoirFX;
     
     float getModulationValue() const;
@@ -95,7 +103,7 @@ private:
     float rateValue; // Updated variable type
 
     // juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> highPassFilter;
-    
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReMiAudioProcessor)
 

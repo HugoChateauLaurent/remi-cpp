@@ -47,11 +47,23 @@ void ReservoirAudioFX::decode_state() {
 
     // Reinitialize output
     output = 0.0f;
-
-    for (int j = 0; j < reservoir_state.size(); ++j) {
+    if(reservoir.units < reservoir_state.size())
+    {
+        for (int j = 0; j < reservoir.units; ++j) {
        
-        output += readout[j][0] * reservoir_state[j] / reservoir.units;
+            output += readout[j][0] * reservoir_state[j] / reservoir.units;
+        }
+    
     }
+    else
+    {
+
+        for (int j = 0; j < reservoir_state.size(); ++j) {
+       
+            output += readout[j][0] * reservoir_state[j] / reservoir.units;
+        }
+    }
+   
 }
 
 

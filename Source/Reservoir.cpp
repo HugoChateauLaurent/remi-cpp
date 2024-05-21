@@ -48,22 +48,45 @@ std::vector<float> ReservoirNetwork::forward(std::vector<float> x) {
 
     // TODO: add noise
 
-    // Update reservoir state
-    std::vector<float> forward_pass(state.size(), 0.0f);
-    for (int i = 0; i < state.size(); ++i) {
-        for (int j = 0; j < state.size(); ++j) {
-            forward_pass[i] += W[j][i] * sr * state[j];
+    if(units < state.size())
+    {
+        std::vector<float> forward_pass(units , 0.0f);
+        for (int i = 0; i < units ; ++i) {
+            for (int j = 0; j < units ; ++j) {
+                forward_pass[i] += W[j][i] * sr * state[j];
+            }
+            for (int j = 0; j < x.size(); ++j) {
+               forward_pass[i] += Win[j][i] * x[j] * input_scaling;
+           }
         }
-        for (int j = 0; j < x.size(); ++j) {
-            forward_pass[i] += Win[j][i] * x[j] * input_scaling;
-        }
-    }
-    std::vector<float> s_next(state.size(), 0.0);
+        std::vector<float> s_next(units , 0.0);
     
-    for (int i = 0; i < state.size(); ++i) {
-        s_next[i] = (1 - lr) * state[i] + lr * std::tanh(forward_pass[i]); // normal noise - tanh(prod + b) - biais bernoulli
+        for (int i = 0; i < units ; ++i) {
+            s_next[i] = (1 - lr) * state[i] + lr * std::tanh(forward_pass[i]); // normal noise - tanh(prod + b) - biais bernoulli
+        }
+        state = s_next;
+    
     }
-    state = s_next;
+
+    // Update reservoir state
+    else
+    {
+        std::vector<float> forward_pass(state.size(), 0.0f);
+        for (int i = 0; i < state.size(); ++i) {
+            for (int j = 0; j < state.size(); ++j) {
+                forward_pass[i] += W[j][i] * sr * state[j];
+            }
+            for (int j = 0; j < x.size(); ++j) {
+               forward_pass[i] += Win[j][i] * x[j] * input_scaling;
+           }
+        }
+        std::vector<float> s_next(state.size(), 0.0);
+    
+        for (int i = 0; i < state.size(); ++i) {
+            s_next[i] = (1 - lr) * state[i] + lr * std::tanh(forward_pass[i]); // normal noise - tanh(prod + b) - biais bernoulli
+        }
+        state = s_next;
+    }
 
     return state;
 }

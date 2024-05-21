@@ -29,7 +29,10 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     void reset();
-    void ReMiAudioProcessorEditor::plot_state();
+    void plot_state();
+    void reset_parameters();
+    void saveParameters();
+    void loadParameters();
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -38,7 +41,11 @@ private:
     Gui::HorizontalMeter horizontalMeter;
     NeuronState::State state;
     juce::TextButton resetButton;
+    juce::TextButton reset_parametersButton;
+    juce::TextButton saveButton;
+    juce::TextButton loadButton;
     bool show_state = false;
+    std::unique_ptr<FileChooser> myChooser;
 
 
 

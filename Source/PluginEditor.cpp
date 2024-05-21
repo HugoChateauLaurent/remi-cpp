@@ -25,12 +25,37 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
     addAndMakeVisible(horizontalMeter); 
     addAndMakeVisible(state);
     addAndMakeVisible(resetButton);
+    addAndMakeVisible(reset_parametersButton);
+    addAndMakeVisible(saveButton);
+    addAndMakeVisible(loadButton);
 
     //show state plot button
     resetButton.setButtonText ("Plot");
     resetButton.setCentrePosition(750,250);
     resetButton.setSize (40, 30);
     resetButton.onClick = [this] {plot_state();}; 
+    
+    //show state plot button
+    reset_parametersButton.setButtonText ("Reset");
+    reset_parametersButton.setCentrePosition(600,250);
+    reset_parametersButton.setSize (40, 30);
+    reset_parametersButton.onClick = [this] {reset_parameters();}; 
+    
+    //save button
+    saveButton.setButtonText ("Save");
+    saveButton.setCentrePosition(700,250);
+    saveButton.setSize (40, 30);
+    saveButton.onClick = [this] {saveParameters();}; 
+    
+    //load button
+    loadButton.setButtonText ("Load");
+    loadButton.setCentrePosition(650,250);
+    loadButton.setSize (40, 30);
+    loadButton.onClick = [this] {loadParameters();}; 
+
+    
+
+    setSize(200, 100);
 
     
     // Make sure that before the constructor has finished, you've set the
@@ -114,9 +139,26 @@ void ReMiAudioProcessorEditor::resized()
 
 }
 
+void ReMiAudioProcessorEditor::reset_parameters()
+{
+    *audioProcessor.input_scaling_parameter = 1.0;
+    *audioProcessor.feedback_mix_parameter = 0.0;
+    *audioProcessor.outputGain_parameter = 1.0;
+    *audioProcessor.min_volume_parameter = 0.0;
+    *audioProcessor.max_volume_parameter = 1.0;
+    *audioProcessor.leak_rate_parameter = 1.0;
+    *audioProcessor.spectral_radius_parameter = 1.0;
+    *audioProcessor.rate_parameter = 3;
+    *audioProcessor.pattern_parameter = 1;
+    
+    audioProcessor.reservoirFX.initialize(true); 
+    audioProcessor.reservoirFX.reservoir.initialize(true);
+
+}
+
 void ReMiAudioProcessorEditor::reset()
 {
-        
+    /*
         *audioProcessor.input_scaling_parameter = 1.0;
         *audioProcessor.feedback_mix_parameter = 0.0;
         *audioProcessor.outputGain_parameter = 1.0;
@@ -126,7 +168,7 @@ void ReMiAudioProcessorEditor::reset()
         *audioProcessor.spectral_radius_parameter = 1.0;
         *audioProcessor.rate_parameter = 3;
         *audioProcessor.pattern_parameter = 1;
-        
+        */
         audioProcessor.reservoirFX.initialize(true); 
         audioProcessor.reservoirFX.reservoir.initialize(true);
         
@@ -164,6 +206,72 @@ void ReMiAudioProcessorEditor::plot_state()
         {
             show_state = false;
         }
+}
+
+void ReMiAudioProcessorEditor::saveParameters()
+{
+    myChooser = std::make_unique<FileChooser>("Save Parameters",
+                                              File::getSpecialLocation(File::userDesktopDirectory),
+                                              "*.params");
+
+    auto folderChooserFlags = FileBrowserComponent::saveMode | FileBrowserComponent::canSelectFiles;
+
+    myChooser->launchAsync(folderChooserFlags, [this](const FileChooser& chooser)
+    {
+        File file(chooser.getResult());
+
+        if (file != File{})  // Check if a valid file is chosen
+        {
+            MemoryBlock destData;
+            processor.getStateInformation(destData);
+
+            file.replaceWithData(destData.getData(), destData.getSize());
+        }
+    });
+
+}
+
+void ReMiAudioProcessorEditor::loadParameters()
+{
+    show_state == false;
+    state.setOpaque(true);
+    state.setRepaintsOnMouseActivity(false);  
+    state.setBufferedToImage(true);
+    horizontalMeter.setEnabled(false);
+    state.setVisible(false);
+    state.setEnabled(false);
+    
+    *audioProcessor.input_scaling_parameter = 1.0;
+    *audioProcessor.feedback_mix_parameter = 0.0;
+    *audioProcessor.outputGain_parameter = 1.0;
+    *audioProcessor.min_volume_parameter = 0.0;
+    *audioProcessor.max_volume_parameter = 1.0;
+    *audioProcessor.leak_rate_parameter = 1.0;
+    *audioProcessor.spectral_radius_parameter = 1.0;
+    *audioProcessor.rate_parameter = 3;
+    *audioProcessor.pattern_parameter = 1;
+    
+    myChooser = std::make_unique<FileChooser>("Load Parameters",
+                                              File::getSpecialLocation(File::userDesktopDirectory),
+                                              "*.params");
+
+    auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles;
+
+    myChooser->launchAsync(folderChooserFlags, [this](const FileChooser& chooser)
+    {
+        File file(chooser.getResult());
+
+        if (file != File{})  // Check if a valid file is chosen
+        {
+            MemoryBlock data;
+            if (file.loadFileAsData(data))
+            {
+                processor.setStateInformation(data.getData(), static_cast<int>(data.getSize()));
+            }
+        }
+    });
+    
+
 }
 
 
