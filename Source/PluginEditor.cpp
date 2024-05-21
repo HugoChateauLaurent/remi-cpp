@@ -18,8 +18,8 @@ float convertToNewRange(float oldValue, float oldMin, float oldMax, float newMin
 
 
 //==============================================================================
-ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+ReMiArpProcessorEditor::ReMiArpProcessorEditor (ReMiArpProcessor& p)
+    : AudioProcessorEditor (&p), arpProcessor (p)
 {
     
     addAndMakeVisible(horizontalMeter); 
@@ -40,18 +40,19 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
     startTimerHz(horizontalMeter.HZ);
 }
 
-ReMiAudioProcessorEditor::~ReMiAudioProcessorEditor()
+ReMiArpProcessorEditor::~ReMiArpProcessorEditor()
 {
     stopTimer();
 }
 
-void ReMiAudioProcessorEditor::timerCallback()
+void ReMiArpProcessorEditor::timerCallback()
 {
-    horizontalMeter.maxDataPoints =  *audioProcessor.display_time*horizontalMeter.HZ;
+    horizontalMeter.maxDataPoints =  *arpProcessor.display_time*horizontalMeter.HZ;
+    state.maxDataPoints =  *arpProcessor.display_time*horizontalMeter.HZ;
     
-    horizontalMeter.setLevel(audioProcessor.getModulationValue());
+    horizontalMeter.setLevel(0); // TODO: set this to the correct value
     horizontalMeter.repaint();
-    state.get_neuron_numbers(audioProcessor.reservoirFX.reservoir.units);
+    state.get_neuron_numbers(arpProcessor.reservoirArp.reservoir.units);
     
     state.setOpaque(true);
     state.setRepaintsOnMouseActivity(false);  
@@ -59,8 +60,8 @@ void ReMiAudioProcessorEditor::timerCallback()
     horizontalMeter.setEnabled(false);
     state.setVisible(false);
     state.setEnabled(false);
-    state.state = audioProcessor.reservoirFX.reservoir_state;
-    state.setColor(audioProcessor.reservoirFX.get_readout());
+    state.state = arpProcessor.reservoirArp.reservoir_state;
+    // state.setColor(arpProcessor.reservoirArp.get_readout());
 
     state.repaint();
     
@@ -70,7 +71,7 @@ void ReMiAudioProcessorEditor::timerCallback()
         
         
         state.set = 0;
-        state.numLines = audioProcessor.reservoirFX.reservoir.units;
+        state.numLines = arpProcessor.reservoirArp.reservoir.units;
         reset();
 
     }
@@ -82,8 +83,8 @@ void ReMiAudioProcessorEditor::timerCallback()
         state.setVisible(true);
         horizontalMeter.setEnabled(true);
         state.setEnabled(true);
-        state.state = audioProcessor.reservoirFX.reservoir_state;
-        state.setColor(audioProcessor.reservoirFX.get_readout());
+        state.state = arpProcessor.reservoirArp.reservoir_state;
+        // state.setColor(arpProcessor.reservoirArp.get_readout());
         state.repaint();
 
 
@@ -93,19 +94,19 @@ void ReMiAudioProcessorEditor::timerCallback()
 }
 
 //==============================================================================
-void ReMiAudioProcessorEditor::paint (juce::Graphics& g)
+void ReMiArpProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    //g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
-    //g.setColour (juce::Colours::white);
-    //g.setFont (15.0f);
-    //g.drawFittedText ("ReMi LFO", getLocalBounds(), juce::Justification::centred, 1);
+    g.setColour (juce::Colours::white);
+    g.setFont (15.0f);
+    g.drawFittedText ("ReMi LFO", getLocalBounds(), juce::Justification::centred, 1);
     
     
 }
 
-void ReMiAudioProcessorEditor::resized()
+void ReMiArpProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
@@ -114,45 +115,40 @@ void ReMiAudioProcessorEditor::resized()
 
 }
 
-void ReMiAudioProcessorEditor::reset()
+void ReMiArpProcessorEditor::reset()
 {
         
-        *audioProcessor.input_scaling_parameter = 1.0;
-        *audioProcessor.feedback_mix_parameter = 0.0;
-        *audioProcessor.outputGain_parameter = 1.0;
-        *audioProcessor.min_volume_parameter = 0.0;
-        *audioProcessor.max_volume_parameter = 1.0;
-        *audioProcessor.leak_rate_parameter = 1.0;
-        *audioProcessor.spectral_radius_parameter = 1.0;
-        *audioProcessor.rate_parameter = 3;
-        *audioProcessor.pattern_parameter = 1;
+        *arpProcessor.feedback_parameter = 0.0f;
+        *arpProcessor.leak_rate_parameter = 1.0f;
+        *arpProcessor.spectral_radius_parameter = 1.0f;
+        *arpProcessor.softmax_beta_parameter = 1.0f;
+        *arpProcessor.rate_parameter = 8;
         
-        audioProcessor.reservoirFX.initialize(true); 
-        audioProcessor.reservoirFX.reservoir.initialize(true);
+        arpProcessor.reservoirArp.initialize(true); 
+        arpProcessor.reservoirArp.reservoir.initialize(true);
         
         //reset 2D queue in state plot
         state.state.clear();
         state.lines.clear();
 	            
 	            
-        for (int i = 0; i < audioProcessor.reservoirFX.reservoir.units; i++ )
+        for (int i = 0; i < arpProcessor.reservoirArp.reservoir.units; i++ )
         {
             std::deque<float> line;
             for (int j = 0; j < 151 ; j++)
             {
-                line.push_back(0.f);
+                line.push_back(0.0f);
             }
                 
             state.lines.push_back(line);            
         }
         
-        state.setState(audioProcessor.reservoirFX.get_state());
-        state.setColor(audioProcessor.reservoirFX.get_readout());
-        //audioProcessor.currentVolume = 0.0;
+        state.setState(arpProcessor.reservoirArp.get_state());
+        // state.setColor(arpProcessor.reservoirArp.get_readout());
 
 }
 
-void ReMiAudioProcessorEditor::plot_state()
+void ReMiArpProcessorEditor::plot_state()
 {
         //show state plot or not
 

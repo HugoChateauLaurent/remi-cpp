@@ -9,20 +9,20 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "ReservoirAudioFX.h"
+#include "ReservoirArp.h"
 
 //==============================================================================
 /**
 */
-class ReMiAudioProcessor  : public juce::AudioProcessor
+class ReMiArpProcessor  : public juce::AudioProcessor
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
                             #endif
 {
 public:
     //==============================================================================
-    ReMiAudioProcessor();
-    ~ReMiAudioProcessor() override;
+    ReMiArpProcessor();
+    ~ReMiArpProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -57,46 +57,26 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    ReservoirAudioFX reservoirFX;
-    
-    float getModulationValue() const;
-    
-    juce::AudioParameterFloat* input_scaling_parameter;
-    juce::AudioParameterFloat* feedback_mix_parameter;
-    juce::AudioParameterFloat* outputGain_parameter;
-    juce::AudioParameterFloat* min_volume_parameter;
-    juce::AudioParameterFloat* max_volume_parameter;
+    ReservoirArp reservoirArp;
+        
+    juce::AudioParameterFloat* feedback_parameter;
     juce::AudioParameterFloat* leak_rate_parameter;
     juce::AudioParameterFloat* spectral_radius_parameter;
-    juce::AudioParameterInt* rate_parameter;
-    juce::AudioParameterInt* pattern_parameter;
+    juce::AudioParameterFloat* softmax_beta_parameter;
+    juce::AudioParameterChoice* rate_parameter;
     juce::AudioParameterInt* neuron_numbers;
     juce::AudioParameterInt* display_time;
-    
-    float currentVolume;
-    int count = 0;
 
 private:
     //==============================================================================
     
-    // Enumeration for musical divisions
-    enum MusicalDivision
-    {
-        Div2 = 0,
-        Div1,
-        DivHalf,
-        DivQuarter,
-        DivEighth,
-        DivSixteenth,
-        DivThirtySecond,
-        NumDivisions
-    };
-    int time;
-    float rateValue; // Updated variable type
-
-    // juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> highPassFilter;
+    // Arpeggiator state
+    int currentNoteValue;
+    float currentSampleRate;
+    float currentBPM;
+    juce::SortedSet<int> notes;
     
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReMiAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReMiArpProcessor)
 
 };

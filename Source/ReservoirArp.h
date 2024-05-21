@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    ReservoirAudioFX.h
+    ReservoirArp.h
     Created: 17 Nov 2023 8:19:11am
     Author:  HomePC
 
@@ -14,18 +14,17 @@
 #include "SparseMatrixGenerator.h"
 
 
-class ReservoirAudioFX {
+class ReservoirArp {
 public:
-    ReservoirAudioFX();
-    virtual ~ReservoirAudioFX() = default;
+    ReservoirArp();
+    virtual ~ReservoirArp() = default;
     ReservoirNetwork reservoir;
     std::vector<std::vector<float>> readout;
     std::vector<float> readout_return;
     std::vector<float> reservoir_state;
     std::vector<float> reservoir_state_return;
-    float output = 0.0f;
-    float old_output = 0.0f;
-    float feedback_mix = 0.0f;
+    std::vector<float> output;
+    int sampled_note = -1;
     
     int seed;
 
@@ -35,7 +34,7 @@ public:
 
     void initialize(bool new_random_seed);
     void reset(bool new_random_seed);
-    float forward(int pattern);
+    float forward(int n_notes, float softmax_beta, float feedback);
     void decode_state();
     std::vector<float> get_state();
     std::vector<float> get_readout();
@@ -43,12 +42,9 @@ public:
 
     void set_sr(float sr);
     void set_lr(float lr);
-    void set_input_scaling(float input_scaling);
     void set_units(int units);
     void set_noise_rc(float noise_rc);
     
-    float outputGain = 0.0f;
-
 //private:
     
 };

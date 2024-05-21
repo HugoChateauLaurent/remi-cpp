@@ -58,7 +58,7 @@ namespace Gui
             int height = getHeight() - marginTop - marginBottom;
             int xTickCount = 10; // Number of tick marks on X axis
             int yTickCount = 10; // Number of tick marks on Y axis
-            float displayTimeInSeconds = maxDataPoints/HZ; //Display for 5 second
+            float displayTimeInSeconds = maxDataPoints/HZ;
             
             /*
             // Draw X and Y axis

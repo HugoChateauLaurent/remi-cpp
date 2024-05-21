@@ -23,7 +23,7 @@ namespace NeuronState
 	       for (int i = 0; i < numLines; i++ )
             {
                 std::deque<float> line;
-                for (int j = 0; j < numPointsPerLine ; j++)
+                for (int j = 0; j < 150 ; j++)
                 {
                     line.push_back(0.f);
                 }
@@ -51,9 +51,9 @@ namespace NeuronState
             int height = getHeight() - marginTop - marginBottom;
             int xTickCount = 10; // Number of tick marks on X axis
             int yTickCount = 10; // Number of tick marks on Y axis
-            float displayTimeInSeconds = 5; //Display for 5 second
+            float displayTimeInSeconds = maxDataPoints/HZ; //Display for 5 second
             
-            
+            /*
             // Draw X and Y axis
             g.setColour(juce::Colours::white);
             g.drawLine(marginLeft, marginTop + height, marginLeft + width, marginTop + height, 2); // X axis
@@ -85,6 +85,9 @@ namespace NeuronState
                 g.drawLine(marginLeft - 5, y, marginLeft + 5, y);
                 g.drawText(juce::String((value * 2 -1), 2), marginLeft - 30, y - 10, 20, 20, juce::Justification::centredRight);
             }
+            */
+
+            g.setColour(juce::Colour::fromHSL(0.12f,0.97f,0.45f,1.0f));
       
             
             if(state.size()== numLines && lines.size()==numLines && state.size()==lines.size())
@@ -94,7 +97,7 @@ namespace NeuronState
 	            for (int i = 0; i< lines.size(); i++)
                 {
                     
-                    while (lines[i].size() > numPointsPerLine )
+                    while (lines[i].size() > maxDataPoints )
                     {
                         lines[i].pop_front(); // Remove oldest points if queue size exceeds maximum 
                     
@@ -113,7 +116,7 @@ namespace NeuronState
                         if(j == lines[i].size()-1 )
                         {
                             
-                            g.setColour(Colour::fromHSV(color[i], 0.8f, 0.8f, 1.0f)); // change color according to readout neuron activity value     
+                            // g.setColour(Colour::fromHSV(color[i], 0.8f, 0.8f, 1.0f)); // change color according to readout neuron activity value     
                             g.drawLine(((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,
                                 ((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,2);
                         }
@@ -121,7 +124,7 @@ namespace NeuronState
                        else
                        {
                            
-                           g.setColour(Colour::fromHSV(color[i] , 0.8f, 0.8f, 1.0f)); // change color according to readout neuron activity value
+                        //    g.setColour(Colour::fromHSV(color[i] , 0.8f, 0.8f, 1.0f)); // change color according to readout neuron activity value
                            g.drawLine(((marginLeft)+((j+1)/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j+1]+1)/2)*height,
                                 ((marginLeft)+(j/HZ)* width / displayTimeInSeconds),(marginTop+height)-((lines[i][j]+1)/2)*height,2);
                        }  
@@ -153,13 +156,11 @@ namespace NeuronState
         {
             if( value != numLines)
             {
-
                 numLines = value;
                 count_paint=0;
                 set = 0;
                 neuron_change = true;
                 change = true;
-                
             }
             
             else
@@ -180,6 +181,7 @@ namespace NeuronState
 
         
         double HZ = 30.0;
+        int maxDataPoints = 150; // Maximum number of data points to keep
         int set = 1;
         int numLines = 16;
         int count_paint = 0;
@@ -192,7 +194,6 @@ namespace NeuronState
 		std::vector<float> color; 
 		double count = 0; 
         float timeInSeconds = 0.f;
-        int numPointsPerLine = 30 * 5; // 5 seconds at 30Hz
         
 	};
 }

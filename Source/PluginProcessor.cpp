@@ -16,7 +16,7 @@
 
 
 //==============================================================================
-ReMiAudioProcessor::ReMiAudioProcessor()
+ReMiArpProcessor::ReMiArpProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -29,62 +29,37 @@ ReMiAudioProcessor::ReMiAudioProcessor()
 #endif
 {
     {
-        addParameter (input_scaling_parameter = new juce::AudioParameterFloat ("input_scaling", // parameterID
-                                                            "Input Scaling", // parameter name
-                                                            0.0f,   // minimum value
-                                                            5.0f,   // maximum value
-                                                            1.0f)); // default value
-
-        addParameter (min_volume_parameter = new juce::AudioParameterFloat ("min_volume", // parameterID
-                                                            "Min Volume", // parameter name
-                                                            0.0f,   // minimum value
-                                                            1.0f,   // maximum value
-                                                            0.0f)); // default value
-
-        addParameter (max_volume_parameter = new juce::AudioParameterFloat ("max_volume", // parameterID
-                                                            "Max Volume", // parameter name
-                                                            0.0f,   // minimum value
-                                                            1.0f,   // maximum value
-                                                            1.0f)); // default value
-                                                            
-        addParameter (outputGain_parameter = new juce::AudioParameterFloat ("outputGain", // parameterID
-                                                            "Output Gain", // parameter name
-                                                            0.0f,   // minimum value
-                                                            1000.0f,   // maximum value
-                                                            1.0f)); // default value
-                                                            
         addParameter (leak_rate_parameter = new juce::AudioParameterFloat ("leak_rate", // parameterID
-                                                            "leak_rate_parameter", // parameter name
+                                                            "Inertia", // parameter name
                                                             0.0f,   // minimum value
                                                             1.0f,   // maximum value
                                                             1.0f)); // default value
         addParameter (spectral_radius_parameter = new juce::AudioParameterFloat ("spectral_radius_parameter", // parameterID
-                                                            "spectral_radius_parameter", // parameter name
+                                                            "Chaos", // parameter name
                                                             0.0f,   // minimum value
                                                             10.0f,   // maximum value
                                                             1.0f)); // default value
-        addParameter (feedback_mix_parameter = new juce::AudioParameterFloat ("feedback_mix_parameter", // parameterID
-                                                            "feedback_mix_parameter", // parameter name
+        addParameter (softmax_beta_parameter = new juce::AudioParameterFloat ("softmax_beta_parameter", // parameterID
+                                                            "Confidence", // parameter name
+                                                            0.001f,   // minimum value
+                                                            1000.0f,   // maximum value
+                                                            1000.0f)); // default value
+        addParameter (feedback_parameter = new juce::AudioParameterFloat ("feedback_parameter", // parameterID
+                                                            "Feedback", // parameter name
                                                             0.0f,   // minimum value
-                                                            5.0f,   // maximum value
+                                                            100.0f,   // maximum value
                                                             0.0f)); // default value
-        addParameter (rate_parameter = new juce::AudioParameterInt ("rate", // parameterID
-                                                            "rate", // parameter name
-                                                            0,   // minimum value
-                                                            NumDivisions - 1,   // maximum value
-                                                            3)); // default value
-        addParameter (pattern_parameter = new juce::AudioParameterInt ("pattern", // parameterID
-                                                            "pattern", // parameter name
-                                                            1,   // minimum value
-                                                            3,   // maximum value
-                                                            1)); // default value
+        addParameter (rate_parameter = new juce::AudioParameterChoice ("rate", // parameterID
+                                                            "Rate", // parameter name
+                                                            {"1/128", "1/96", "1/64", "1/48", "1/32", "1/24", "1/16", "1/12", "1/8", "1/6", "1/4", "1/3", "1/2", "1/1"}, // possible choices
+                                                            8)); // default value (1/8)
         addParameter (neuron_numbers = new juce::AudioParameterInt ("neuron_numbers", // parameterID
-                                                            "neuron_numbers", // parameter name
+                                                            "Neurons", // parameter name
                                                             1,   // minimum value
-                                                            64,   // maximum value
+                                                            300,   // maximum value
                                                             16)); // default value
         addParameter (display_time = new juce::AudioParameterInt ("display_time", // parameterID
-                                                            "display_time", // parameter name
+                                                            "Display Time", // parameter name
                                                             1,   // minimum value
                                                             10,   // maximum value
                                                             5)); // default value
@@ -96,17 +71,17 @@ ReMiAudioProcessor::ReMiAudioProcessor()
     
 }
 
-ReMiAudioProcessor::~ReMiAudioProcessor()
+ReMiArpProcessor::~ReMiArpProcessor()
 {
 }
 
 //==============================================================================
-const juce::String ReMiAudioProcessor::getName() const
+const juce::String ReMiArpProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool ReMiAudioProcessor::acceptsMidi() const
+bool ReMiArpProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -115,7 +90,7 @@ bool ReMiAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool ReMiAudioProcessor::producesMidi() const
+bool ReMiArpProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -124,7 +99,7 @@ bool ReMiAudioProcessor::producesMidi() const
    #endif
 }
 
-bool ReMiAudioProcessor::isMidiEffect() const
+bool ReMiArpProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -133,64 +108,51 @@ bool ReMiAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double ReMiAudioProcessor::getTailLengthSeconds() const
+double ReMiArpProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int ReMiAudioProcessor::getNumPrograms()
+int ReMiArpProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int ReMiAudioProcessor::getCurrentProgram()
+int ReMiArpProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void ReMiAudioProcessor::setCurrentProgram (int index)
+void ReMiArpProcessor::setCurrentProgram (int index)
 {
 }
 
-const juce::String ReMiAudioProcessor::getProgramName (int index)
+const juce::String ReMiArpProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void ReMiAudioProcessor::changeProgramName (int index, const juce::String& newName)
+void ReMiArpProcessor::changeProgramName (int index, const juce::String& newName)
 {
 }
 
 //==============================================================================
-void ReMiAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void ReMiArpProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // juce::dsp::ProcessSpec spec;
-    // spec.sampleRate = sampleRate;
-    // spec.maximumBlockSize = samplesPerBlock;
-    // spec.numChannels = getTotalNumOutputChannels();
-
-    // highPassFilter.reset();
-    // *highPassFilter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 2000.0f);//5.0f);
-    // highPassFilter.prepare(spec);
-
-    currentVolume = 0.0f;
-    time = 0;
-    rateValue = static_cast<float>(sampleRate); // Initialize rateValue with sampleRate
- 
-
-    
-
+    notes.clear();
+    currentNoteValue = -1;
+    currentSampleRate = static_cast<float> (sampleRate);
 }
 
-void ReMiAudioProcessor::releaseResources()
+void ReMiArpProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool ReMiAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool ReMiArpProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
@@ -215,79 +177,96 @@ bool ReMiAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) con
 }
 #endif
 
-void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void ReMiArpProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    reservoirFX.reservoir.units=*neuron_numbers;
-    
-    auto numSamples = buffer.getNumSamples();
 
-    juce::AudioPlayHead* playHead = getPlayHead();
-    if (playHead == nullptr) return;
-
-    AudioPlayHead::CurrentPositionInfo info;
-    juce::AudioPlayHead::CurrentPositionInfo positionInfo;
-    playHead->getCurrentPosition(positionInfo); // get the current position from the playhead
-
-    auto bpm = positionInfo.bpm;                //bpm is quarterNotesPerMinute
-    auto bps = bpm / 60;                        //bps is quarterNotesPerSecond
-    auto samplesPerBeat = rateValue / bps;      //number of samples per beat/quarternote is samples per sec / beats per second
-
-    // Calculate note duration based on the rate parameter
-    auto division = static_cast<MusicalDivision>(rate_parameter->get());
-    auto intervalDuration = static_cast<int>(samplesPerBeat / std::pow(2.0, division));
-
-    time = (time + numSamples) % intervalDuration;
-    
-    if ((time + numSamples) >= intervalDuration)
-    {
-        // currentVolume = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        currentVolume = reservoirFX.forward((pattern_parameter->get()) - 1);
-        currentVolume = (currentVolume - min_volume_parameter->get()) / (max_volume_parameter->get() - min_volume_parameter->get());
-        currentVolume = juce::jlimit(0.0f, 1.0f, currentVolume); // Ensure currentVolume is between 0 and 1
-     
-    }
-
-
+    reservoirArp.reservoir.units=*neuron_numbers;
 
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
-    reservoirFX.reservoir.input_scaling=*input_scaling_parameter;
-    reservoirFX.reservoir.lr=*leak_rate_parameter;
-    reservoirFX.outputGain=*outputGain_parameter;
-    reservoirFX.feedback_mix=*feedback_mix_parameter;
-    reservoirFX.reservoir.sr=*spectral_radius_parameter;
-    
-    
-    for (auto i = 0; i < totalNumOutputChannels; ++i)
+    reservoirArp.reservoir.lr=*leak_rate_parameter;
+    reservoirArp.reservoir.sr=*spectral_radius_parameter;
+
+    // Retrieve the current position info from the host
+    juce::AudioPlayHead::CurrentPositionInfo positionInfo;
+    if (auto* playHead = getPlayHead())
     {
-        auto* channelData = buffer.getWritePointer(i);
-        
-        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-        {
-            channelData[sample] = channelData[sample] * currentVolume; 
-        }
+        playHead->getCurrentPosition(positionInfo);
+        currentBPM = positionInfo.bpm; // Update the BPM from the host
     }
 
-    std::ofstream logFile ("E:\\U-Bordeaux\\hackrob\\Remi\\log.csv", std::ios_base::app);
-    logFile << currentVolume << "\n";
-    logFile.close();
+    // Retrieve the rate from the parameter and map to note duration
+    float rate = 1.0f; // Default to Quarter Note
+    switch (rate_parameter->getIndex())
+    {
+        case 0: rate = 1.0f / 128.0f; break; // 1/128 note
+        case 1: rate = 1.0f / 96.0f; break;  // 1/96 note
+        case 2: rate = 1.0f / 64.0f; break;  // 1/64 note
+        case 3: rate = 1.0f / 48.0f; break;  // 1/48 note
+        case 4: rate = 1.0f / 32.0f; break;  // 1/32 note
+        case 5: rate = 1.0f / 24.0f; break;  // 1/24 note
+        case 6: rate = 1.0f / 16.0f; break;  // 1/16 note
+        case 7: rate = 1.0f / 12.0f; break;  // 1/12 note
+        case 8: rate = 1.0f / 8.0f; break;   // 1/8 note
+        case 9: rate = 1.0f / 6.0f; break;   // 1/6 note
+        case 10: rate = 1.0f / 4.0f; break;  // 1/4 note
+        case 11: rate = 1.0f / 3.0f; break;  // 1/3 note
+        case 12: rate = 1.0f / 2.0f; break;  // 1/2 note
+        case 13: rate = 1.0f; break;        // 1/1 note (whole note)
+        default: rate = 1.0f / 8.0f; break; // Default to 1/8 note
+    }
+    
+    auto numSamples = buffer.getNumSamples();
+    
+    // Calculate the duration of one beat in seconds
+    double beatDurationInSeconds = 60.0 / currentBPM;
+
+    // Calculate the note duration in samples
+    auto noteDuration = static_cast<int> (std::ceil (currentSampleRate * beatDurationInSeconds * rate));
+    
+    for (const auto metadata : midiMessages)
+    {
+        const auto msg = metadata.getMessage();
+        if (msg.isNoteOn())  notes.add (msg.getNoteNumber());
+        else if (msg.isNoteOff()) notes.removeValue (msg.getNoteNumber());
+    }
+    midiMessages.clear();
+
+    // Calculate the current sample position within the current note duration
+    int currentSamplePosition = positionInfo.timeInSamples % noteDuration;
+
+    if ((currentSamplePosition + numSamples) >= noteDuration)
+    {
+        auto offset = juce::jmax (0, juce::jmin ((int) (noteDuration - currentSamplePosition), numSamples - 1));
+
+        if (currentNoteValue >= 0)
+        {
+            midiMessages.addEvent (juce::MidiMessage::noteOff (1, currentNoteValue), offset);
+            currentNoteValue = -1;
+        }
+        if (notes.size() > 0)
+        {
+            currentNoteValue = notes[reservoirArp.forward(notes.size(), *softmax_beta_parameter, *feedback_parameter)];
+            midiMessages.addEvent(juce::MidiMessage::noteOn(1, currentNoteValue, (juce::uint8) 127), offset); // TODO: control velocity
+        }
+    }
+    
+    
 
 }
 
 //==============================================================================
-bool ReMiAudioProcessor::hasEditor() const
+bool ReMiArpProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor* ReMiAudioProcessor::createEditor()
+juce::AudioProcessorEditor* ReMiArpProcessor::createEditor()
 {
-    return new ReMiAudioProcessorEditor (*this);
+    return new ReMiArpProcessorEditor (*this);
 }
 
 //==============================================================================
-void ReMiAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void ReMiArpProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
@@ -295,7 +274,7 @@ void ReMiAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 
 }
 
-void ReMiAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void ReMiArpProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -303,14 +282,9 @@ void ReMiAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 
 }
 
-float ReMiAudioProcessor::getModulationValue() const
-{
-    return currentVolume;
-}
-
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new ReMiAudioProcessor();
+    return new ReMiArpProcessor();
 }
