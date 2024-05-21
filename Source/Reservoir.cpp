@@ -29,11 +29,14 @@ void ReservoirNetwork::initialize(bool new_random_seed) {
     }
     generator.seed(seed);
 
-    SparseMatrixGenerator WGenerator(units, units, seed, true, 1.0f-rc_connectivity); // normal distibution
+    SparseMatrixGenerator WGenerator(units, units, seed, true, 0.9f);
     W = WGenerator.generateSparseMatrix();
 
-    SparseMatrixGenerator WinGenerator(input_dim, units, seed+1, false, 0.0f); // normal distibution
+    SparseMatrixGenerator WinGenerator(input_dim, units, seed+1, false, 0.5f);
     Win = WinGenerator.generateSparseMatrix();
+
+    SparseMatrixGenerator biasGenerator(1, units, seed+2, false, 0.0f);
+    bias = biasGenerator.generateSparseMatrix();
 
     // Initialize state to zeros
     state.resize(units, 0.0f);
@@ -57,7 +60,8 @@ std::vector<float> ReservoirNetwork::forward(std::vector<float> x) {
             }
             for (int j = 0; j < x.size(); ++j) {
                forward_pass[i] += Win[j][i] * x[j] * input_scaling;
-           }
+            }
+            forward_pass[i] += bias[0][i];
         }
         std::vector<float> s_next(units , 0.0);
     
@@ -78,7 +82,8 @@ std::vector<float> ReservoirNetwork::forward(std::vector<float> x) {
             }
             for (int j = 0; j < x.size(); ++j) {
                forward_pass[i] += Win[j][i] * x[j] * input_scaling;
-           }
+            }
+            forward_pass[i] += bias[0][i];
         }
         std::vector<float> s_next(state.size(), 0.0);
     

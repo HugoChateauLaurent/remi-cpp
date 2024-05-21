@@ -19,7 +19,7 @@ void SparseMatrixGenerator::generateMatrix(std::vector<std::vector<float>>& matr
             }
             else {
                 float randomValue = distributionFunction(generator);
-                matrix[i][j] = randomValue;
+                matrix[i][j] = randomValue * 2 - 1;
             }
         }
     }

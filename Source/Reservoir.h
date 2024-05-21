@@ -31,6 +31,7 @@ public:
 
     std::vector<std::vector<float>> Win;
     std::vector<std::vector<float>> W;          // Reservoir matrix
+    std::vector<std::vector<float>> bias;          // Reservoir bias
     std::vector<float> state;                   // Reservoir state
     std::default_random_engine generator;        // Random number generator
     std::normal_distribution<float> distribution; // Normal distribution for noise

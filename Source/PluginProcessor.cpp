@@ -375,6 +375,7 @@ void ReMiAudioProcessor::getStateInformation (MemoryBlock& destData)
     addArrayToXml(xml.get(), "Win", reservoirFX.reservoir.Win);
     addArrayToXml(xml.get(), "State", reservoirFX.reservoir_state);
     addArrayToXml(xml.get(), "Readout", reservoirFX.get_readout());
+    addArrayToXml(xml.get(), "Bias", reservoirFX.reservoir.bias);
 
     // Convert XML to binary
     copyXmlToBinary(*xml, destData);
@@ -407,6 +408,7 @@ void ReMiAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
             loadArrayFromXml(xmlState.get(), "Win", reservoirFX.reservoir.Win);
             loadArrayFromXml(xmlState.get(), "State", reservoirFX.reservoir_state);
             loadArrayFromXml(xmlState.get(), "Readout", reservoirFX.get_readout());
+            loadArrayFromXml(xmlState.get(), "Bias", reservoirFX.reservoir.bias);
 
         }
     }
