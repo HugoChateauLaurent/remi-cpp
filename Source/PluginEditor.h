@@ -50,6 +50,9 @@ private:
     std::unique_ptr<FileChooser> myChooser;
     std::unique_ptr<ColorGridComponent> colorGrid;
 
+    int rows;
+    int cols;
+
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReMiAudioProcessorEditor)
