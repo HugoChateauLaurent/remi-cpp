@@ -121,6 +121,17 @@ void ReMiAudioProcessorEditor::timerCallback()
 
 void ReMiAudioProcessorEditor::generateAndApplyColors()
 {
+    // Generate random variables once per frame
+    std::vector<double> random_vars;
+    random_vars.reserve(num_random_vars);
+
+    static std::default_random_engine generator(std::random_device{}());
+    static std::uniform_real_distribution<double> distribution(0.0, 1.0);
+
+    for (int i = 0; i < num_random_vars; ++i) {
+        random_vars.push_back(distribution(generator));
+    }
+
     std::vector<juce::Colour> colors;
     colors.reserve(rows * cols);
 
@@ -129,11 +140,10 @@ void ReMiAudioProcessorEditor::generateAndApplyColors()
         for (int x = 0; x < cols; ++x)
         {
             // Generate input features for the neural network
-            std::vector<double> features = generateInputFeatures(x, y, cols, rows, num_random_vars);
+            std::vector<double> features = generateInputFeatures(x, y, cols, rows, random_vars);
 
             // Initialize input_features
-            std::vector<std::vector<double>> input_features;
-            input_features.push_back(features);
+            std::vector<std::vector<double>> input_features = { features };
 
             // Forward pass through the neural network
             auto output = color_net->forward(input_features);
