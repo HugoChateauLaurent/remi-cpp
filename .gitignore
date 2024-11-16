@@ -1,5 +1,5 @@
-test/Builds/*
-test/JuceLibraryCode/*
+Builds/*
+JuceLibraryCode/*
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
