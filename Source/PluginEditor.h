@@ -12,6 +12,7 @@
 #include "PluginProcessor.h"
 #include "Component/HorizontalMeter.h"
 #include "Component/State.h"
+#include "Component/ColorGridComponent.h"
 
 
 //==============================================================================
@@ -33,6 +34,7 @@ public:
     void reset_parameters();
     void saveParameters();
     void loadParameters();
+    std::vector<juce::Colour> generateNewColorData();
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -46,6 +48,7 @@ private:
     juce::TextButton loadButton;
     bool show_state = false;
     std::unique_ptr<FileChooser> myChooser;
+    std::unique_ptr<ColorGridComponent> colorGrid;
 
 
 

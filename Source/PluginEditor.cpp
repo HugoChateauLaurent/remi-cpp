@@ -53,6 +53,14 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
     loadButton.setSize (40, 30);
     loadButton.onClick = [this] {loadParameters();}; 
 
+    // Example color data and grid dimensions
+    std::vector<juce::Colour> colors = { juce::Colours::red, juce::Colours::green, juce::Colours::blue, juce::Colours::yellow };
+    int rows = 2;
+    int cols = 2;
+
+    colorGrid = std::make_unique<ColorGridComponent>(colors, rows, cols);
+    addAndMakeVisible(colorGrid.get());
+
     
 
     setSize(200, 100);
@@ -113,6 +121,10 @@ void ReMiAudioProcessorEditor::timerCallback()
 
 
     }
+
+    // Generate or fetch new color data
+    std::vector<juce::Colour> newColors = generateNewColorData();
+    colorGrid->updateColors(newColors);
     
     
 }
@@ -136,7 +148,7 @@ void ReMiAudioProcessorEditor::resized()
     // subcomponents in your editor..
     horizontalMeter.setBounds(getLocalBounds());
     state.setBounds(getLocalBounds());
-
+    colorGrid->setBounds(getLocalBounds());
 }
 
 void ReMiAudioProcessorEditor::reset_parameters()
@@ -270,6 +282,16 @@ void ReMiAudioProcessorEditor::loadParameters()
             }
         }
     });
+    
+
+}
+
+std::vector<juce::Colour> ReMiAudioProcessorEditor::generateNewColorData()
+{
+    // Implement your logic to generate or fetch new color data
+    // For example, this could be based on audio analysis or other real-time data
+    std::vector<juce::Colour> colors = { /* ... */ };
+    return colors;
     
 
 }
