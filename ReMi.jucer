@@ -3,7 +3,7 @@
 <JUCERPROJECT id="kUEARs" name="ReMi LFO" projectType="audioplug" useAppConfig="0"
               displaySplashScreen="1" jucerFormatVersion="1" pluginFormats="buildVST3"
               pluginManufacturer="ReMi LFO" pluginManufacturerCode="ReMi" aaxIdentifier="com.ReMi.ReMi"
-              bundleIdentifier="com.ReMi.ReMi" headerPath="C:\Users\HomePC\source\repos\remi-cpp\eigen-3.4.0"
+              bundleIdentifier="com.ReMi.ReMi" headerPath="eigen-3.4.0&#10;libs&#10;libtorch&#10;C:\Users\chateaulaurent\Documents\ReMi\remi-cpp&#10;C:\Users\chateaulaurent\Documents\ReMi\remi-cpp\libtorch"
               companyWebsite="remi-audio.com">
   <MAINGROUP id="SIR8ad" name="ReMi LFO">
     <GROUP id="{997AA5AA-3AEC-1D3D-2C15-CAA4B39D7713}" name="Component">

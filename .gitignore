@@ -15,3 +15,5 @@ build
 .vscode
 .vs
 Builds
+libs
+libtorch

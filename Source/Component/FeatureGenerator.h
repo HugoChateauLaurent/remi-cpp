@@ -5,23 +5,26 @@
 #include <random>
 
 // Generate input features for a given grid cell
-std::vector<float> generateInputFeatures(int x, int y, int grid_width, int grid_height, int num_random_vars) {
-    float norm_x = static_cast<float>(x) / grid_width;
-    float norm_y = static_cast<float>(y) / grid_height;
+inline std::vector<double> generateInputFeatures(int x, int y, int grid_width, int grid_height, int num_random_vars) {
+    std::vector<double> features;
 
-    float center_x = 0.5f;
-    float center_y = 0.5f;
-    float distance_to_center = std::sqrt(std::pow(norm_x - center_x, 2) + std::pow(norm_y - center_y, 2));
+    // Normalize x and y coordinates
+    features.push_back(static_cast<double>(x) / (grid_width - 1));
+    features.push_back(static_cast<double>(y) / (grid_height - 1));
 
-    std::vector<float> features = {norm_x, norm_y, distance_to_center};
+    // Compute distance from center
+    double center_x = (grid_width - 1) / 2.0;
+    double center_y = (grid_height - 1) / 2.0;
+    double distance = std::sqrt(std::pow(x - center_x, 2) + std::pow(y - center_y, 2)) /
+                      std::sqrt(std::pow(center_x, 2) + std::pow(center_y, 2));
+    features.push_back(distance);
 
-    // Generate random variables
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0.0, 1.0);
-
-    for (int i = 0; i < num_random_vars; ++i) {
-        features.push_back(dis(gen));
+    // Add random variables
+    static std::default_random_engine generator(std::random_device{}());
+    static std::uniform_real_distribution<double> distribution(0.0, 1.0);
+    for (int i = 0; i < num_random_vars; ++i)
+    {
+        features.push_back(distribution(generator));
     }
 
     return features;
