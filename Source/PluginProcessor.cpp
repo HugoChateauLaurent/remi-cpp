@@ -89,6 +89,16 @@ ReMiAudioProcessor::ReMiAudioProcessor()
                                                             1,   // minimum value
                                                             10,   // maximum value
                                                             5)); // default value
+        addParameter (random1_parameter = new juce::AudioParameterFloat ("random1", // parameterID
+                                                            "random1", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+        addParameter (random2_parameter = new juce::AudioParameterFloat ("random2", // parameterID
+                                                            "random2", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
                                                             
                                                             
     }
@@ -219,9 +229,6 @@ bool ReMiAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) con
 void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
 
-    // At the top of processBlock
-    std::lock_guard<std::mutex> lock(randomVarsMutex);
-
 
     reservoirFX.reservoir.units=*neuron_numbers;
     
@@ -278,40 +285,10 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     std::ofstream logFile ("E:\\U-Bordeaux\\hackrob\\Remi\\log.csv", std::ios_base::app);
     logFile << currentVolume << "\n";
     logFile.close();
-
-    // Variables to store MIDI controller values
-    std::vector<std::pair<int, int>> controllerMessages; // Pair of controller number and value
-
-    // Process MIDI messages
-    for (const auto metadata : midiMessages)
-    {
-        const auto message = metadata.getMessage();
-
-        if (message.isController())
-        {
-            int controllerNumber = message.getControllerNumber();
-            int controllerValue = message.getControllerValue();
-
-            // Store the controller messages
-            controllerMessages.push_back({ controllerNumber, controllerValue });
-        }
-    }
-
-    // Update random variables based on MIDI controller input
-    for (const auto& [controllerNumber, controllerValue] : controllerMessages)
-    {
-        auto it = controllerToRandomVarIndex.find(controllerNumber);
-        if (it != controllerToRandomVarIndex.end())
-        {
-            int randomVarIndex = it->second;
-
-            // Normalize the controller value (0-127) to the range [0.0, 1.0]
-            double normalizedValue = static_cast<double>(controllerValue) / 127.0;
-
-            // Update the corresponding random variable
-            midiControlledRandomVars[randomVarIndex] = normalizedValue;
-        }
-    }
+    
+    // Set randomVars from random1 and random2 parameters
+    randomVars[0] = *random1_parameter;
+    randomVars[1] = *random2_parameter;
 
 }
 
