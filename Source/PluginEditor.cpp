@@ -129,40 +129,6 @@ void ReMiAudioProcessorEditor::timerCallback()
     
 }
 
-void ReMiAudioProcessorEditor::generateAndApplyColors()
-{
-    int num_random_vars = 2; // Number of random variables
-
-    // Initialize the neural network
-    std::vector<int> hidden_sizes = {64, 128, 64};
-    std::vector<std::string> activation_functions = {"relu", "relu", "relu"};
-    ColorNet color_net(5, hidden_sizes, activation_functions); // 5 inputs: x, y, distance, 2 random vars
-
-    std::vector<juce::Colour> colors;
-    colors.reserve(rows * cols);
-
-    for (int y = 0; y < rows; ++y) {
-        for (int x = 0; x < cols; ++x) {
-            auto features = generateInputFeatures(x, y, cols, rows, num_random_vars);
-            auto input_tensor = torch::tensor(features).unsqueeze(0); // Add batch dimension
-
-            auto output = color_net.forward(input_tensor).squeeze(0); // Remove batch dimension
-
-            // Convert output to RGB values (0-255)
-            uint8_t red = static_cast<uint8_t>(output[0].item<float>() * 255);
-            uint8_t green = static_cast<uint8_t>(output[1].item<float>() * 255);
-            uint8_t blue = static_cast<uint8_t>(output[2].item<float>() * 255);
-
-            colors.emplace_back(juce::Colour::fromRGB(red, green, blue));
-        }
-    }
-
-    // Update the color grid component
-    colorGridComponent.updateColors(colors);
-    
-    
-}
-
 //==============================================================================
 void ReMiAudioProcessorEditor::paint (juce::Graphics& g)
 {
