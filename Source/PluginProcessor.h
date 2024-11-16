@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "ReservoirAudioFX.h"
+#include <mutex>
 
 //==============================================================================
 /**
@@ -83,6 +84,15 @@ public:
     
     float currentVolume;
     int count = 0;
+
+    const std::map<int, int> controllerToRandomVarIndex = {
+        { 7, 0 }, // Controller number 1 maps to random variable index 0
+        { 11, 1 }  // Controller number 2 maps to random variable index 1
+    };
+
+    // Variable to store the current values of random variables
+    std::vector<double> midiControlledRandomVars = { 0.5, 0.5 };
+    std::mutex randomVarsMutex;
 
 private:
     //==============================================================================

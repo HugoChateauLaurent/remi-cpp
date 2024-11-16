@@ -6,7 +6,7 @@
 
 // Generate input features for a given grid cell
 inline std::vector<double> generateInputFeatures(
-    int x, int y, int grid_width, int grid_height, const std::vector<double>& random_vars) {
+    int x, int y, int grid_width, int grid_height, const std::vector<double>& randomVars) {
     std::vector<double> features;
 
     // Normalize x and y coordinates
@@ -20,8 +20,9 @@ inline std::vector<double> generateInputFeatures(
                       std::sqrt(std::pow(center_x, 2) + std::pow(center_y, 2));
     features.push_back(distance);
 
-    // Add random variables (same for all pixels in the frame)
-    for (const auto& rand_var : random_vars) {
+    // Add random variables
+    for (const auto& rand_var : randomVars)
+    {
         features.push_back(rand_var);
     }
 
