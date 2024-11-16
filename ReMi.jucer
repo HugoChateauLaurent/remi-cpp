@@ -3,7 +3,7 @@
 <JUCERPROJECT id="kUEARs" name="ReMi LFO" projectType="audioplug" useAppConfig="0"
               displaySplashScreen="1" jucerFormatVersion="1" pluginFormats="buildVST3"
               pluginManufacturer="ReMi LFO" pluginManufacturerCode="ReMi" aaxIdentifier="com.ReMi.ReMi"
-              bundleIdentifier="com.ReMi.ReMi" headerPath="eigen-3.4.0&#10;libs&#10;libtorch&#10;C:\Users\chateaulaurent\Documents\ReMi\remi-cpp&#10;C:\Users\chateaulaurent\Documents\ReMi\remi-cpp\libtorch"
+              bundleIdentifier="com.ReMi.ReMi" headerPath="eigen-3.4.0&#10;libs&#10;libtorch&#10;C:\Users\chateaulaurent\Documents\ReMi\remi-cpp&#10;C:\Users\chateaulaurent\Documents\ReMi\remi-cpp\libtorch&#10;/usr/include/freetype2&#10;/usr/include/gtk-3.0&#10;/usr/include/glib-2.0&#10;/usr/lib/x86_64-linux-gnu/glib-2.0/include&#10;/usr/include/pango-1.0&#10;/usr/include/cairo&#10;/usr/include/gdk-pixbuf-2.0&#10;/usr/include/atk-1.0&#10;/usr/include/harfbuzz"
               companyWebsite="remi-audio.com">
   <MAINGROUP id="SIR8ad" name="ReMi LFO">
     <GROUP id="{997AA5AA-3AEC-1D3D-2C15-CAA4B39D7713}" name="Component">
@@ -11,6 +11,13 @@
             file="Source/Component/HorizontalMeter.h"/>
       <FILE id="R9clrg" name="LockFreeFIFO.h" compile="0" resource="0" file="Source/Component/LockFreeFIFO.h"/>
       <FILE id="nHF0IF" name="State.h" compile="0" resource="0" file="Source/Component/State.h"/>
+      <FILE id="WSLgTH" name="ActivationFunctions.h" compile="0" resource="0"
+            file="Source/Component/ActivationFunctions.h"/>
+      <FILE id="EHmUqO" name="ColorGridComponent.h" compile="0" resource="0"
+            file="Source/Component/ColorGridComponent.h"/>
+      <FILE id="dEUOdN" name="ColorNet.h" compile="0" resource="0" file="Source/Component/ColorNet.h"/>
+      <FILE id="AIwBS4" name="FeatureGenerator.h" compile="0" resource="0"
+            file="Source/Component/FeatureGenerator.h"/>
     </GROUP>
     <FILE id="HwLgWO" name="cmp_datamodels.h" compile="0" resource="0"
           file="Source/cmp_datamodels.h"/>
@@ -36,26 +43,26 @@
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
-    <VS2022 targetFolder="Builds/VisualStudio2022">
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="ReMi"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="ReMi"/>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_audio_basics" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_core" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_events" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../../../../JUCE_SDKs/JUCE-7.0.4/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="juce_audio_devices" path="../../juce"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
+        <MODULEPATH id="juce_audio_utils" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
       </MODULEPATHS>
-    </VS2022>
+    </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
