@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <memory>
 #include "PluginProcessor.h"
 #include "Component/HorizontalMeter.h"
 #include "Component/State.h"
@@ -52,6 +53,8 @@ private:
 
     int rows;
     int cols;
+    int num_random_vars = 2;
+    std::unique_ptr<ColorNet> color_net;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReMiAudioProcessorEditor)
 };

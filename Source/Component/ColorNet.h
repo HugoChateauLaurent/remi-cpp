@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <functional>
+#include <random>
 #include "ActivationFunctions.h"
 
 // Linear layer class
@@ -13,8 +14,8 @@ public:
     std::vector<double> bias;                // 1D vector for biases
 
     Linear(int input_size, int output_size) {
-        // Random number generator for initializing weights and biases
-        std::default_random_engine generator(std::random_device{}());
+        // Use a fixed seed for the random number generator
+        static std::default_random_engine generator(42); // Fixed seed
         std::normal_distribution<double> distribution(0.0, 1.0);
 
         // Initialize weights

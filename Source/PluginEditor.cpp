@@ -63,6 +63,13 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
     colorGrid = std::make_unique<ColorGridComponent>(colors, rows, cols);
     addAndMakeVisible(colorGrid.get());
 
+    // Initialize color_net using std::make_unique
+    color_net = std::make_unique<ColorNet>(
+        3 + num_random_vars,
+        std::vector<int>{7, 7, 7},
+        std::vector<std::string>{"tanh", "tanh", "tanh"}
+    );
+
     setSize(800, 300);
     startTimerHz(horizontalMeter.HZ);
 }
@@ -114,13 +121,6 @@ void ReMiAudioProcessorEditor::timerCallback()
 
 void ReMiAudioProcessorEditor::generateAndApplyColors()
 {
-    int num_random_vars = 2; // Number of random variables
-
-    // Initialize the neural network only once
-    static std::vector<int> hidden_sizes = {7, 7, 7};
-    static std::vector<std::string> activation_functions = {"tanh", "tanh", "tanh"};
-    static ColorNet color_net(5, hidden_sizes, activation_functions); // 5 inputs
-
     std::vector<juce::Colour> colors;
     colors.reserve(rows * cols);
 
@@ -136,7 +136,7 @@ void ReMiAudioProcessorEditor::generateAndApplyColors()
             input_features.push_back(features);
 
             // Forward pass through the neural network
-            auto output = color_net.forward(input_features);
+            auto output = color_net->forward(input_features);
 
             // Convert output to RGB values (0-255)
             uint8_t red = static_cast<uint8_t>(output[0][0] * 255);
