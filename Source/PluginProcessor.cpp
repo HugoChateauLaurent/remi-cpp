@@ -271,6 +271,7 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     reservoirFX.feedback_mix=*feedback_mix_parameter;
     reservoirFX.reservoir.sr=*spectral_radius_parameter;
     
+    audioVars.reserve(1);
     for (auto i = 0; i < totalNumOutputChannels; ++i)
     {
         auto* channelData = buffer.getWritePointer(i);
