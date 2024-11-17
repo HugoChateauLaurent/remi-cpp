@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="kUEARs" name="ReMi LFO" projectType="audioplug" useAppConfig="0"
+<JUCERPROJECT id="kUEARs" name="ReMi Visual" projectType="audioplug" useAppConfig="0"
               displaySplashScreen="1" jucerFormatVersion="1" pluginFormats="buildVST3"
-              pluginManufacturer="ReMi LFO" pluginManufacturerCode="ReMi" aaxIdentifier="com.ReMi.ReMi"
-              bundleIdentifier="com.ReMi.ReMi" headerPath="eigen-3.4.0&#10;libs&#10;libtorch&#10;C:\Users\chateaulaurent\Documents\ReMi\remi-cpp&#10;C:\Users\chateaulaurent\Documents\ReMi\remi-cpp\libtorch&#10;/usr/include/freetype2&#10;/usr/include/gtk-3.0&#10;/usr/include/glib-2.0&#10;/usr/lib/x86_64-linux-gnu/glib-2.0/include&#10;/usr/include/pango-1.0&#10;/usr/include/cairo&#10;/usr/include/gdk-pixbuf-2.0&#10;/usr/include/atk-1.0&#10;/usr/include/harfbuzz"
+              pluginManufacturer="ReMi Visual" pluginManufacturerCode="ReMi"
+              aaxIdentifier="com.ReMi.ReMi" bundleIdentifier="com.ReMi.ReMi"
+              headerPath="eigen-3.4.0&#10;libs&#10;libtorch&#10;C:\Users\chateaulaurent\Documents\ReMi\remi-cpp&#10;C:\Users\chateaulaurent\Documents\ReMi\remi-cpp\libtorch&#10;/usr/include/freetype2&#10;/usr/include/gtk-3.0&#10;/usr/include/glib-2.0&#10;/usr/lib/x86_64-linux-gnu/glib-2.0/include&#10;/usr/include/pango-1.0&#10;/usr/include/cairo&#10;/usr/include/gdk-pixbuf-2.0&#10;/usr/include/atk-1.0&#10;/usr/include/harfbuzz"
               companyWebsite="remi-audio.com">
-  <MAINGROUP id="SIR8ad" name="ReMi LFO">
+  <MAINGROUP id="SIR8ad" name="ReMi Visual">
     <GROUP id="{997AA5AA-3AEC-1D3D-2C15-CAA4B39D7713}" name="Component">
       <FILE id="hItmjq" name="HorizontalMeter.h" compile="0" resource="0"
             file="Source/Component/HorizontalMeter.h"/>

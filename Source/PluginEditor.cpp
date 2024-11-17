@@ -70,7 +70,7 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
         std::vector<std::string>{"sin", "sin", "sin", "sin", "sin"}
     );
 
-    setSize(800, 300);
+    setSize(300, 300);
     startTimerHz(horizontalMeter.HZ);
 }
 
