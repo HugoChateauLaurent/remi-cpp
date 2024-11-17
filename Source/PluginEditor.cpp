@@ -66,11 +66,11 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
     // Initialize color_net using std::make_unique
     color_net = std::make_unique<ColorNet>(
         3 + num_random_vars,
-        std::vector<int>{7, 7, 7},
-        std::vector<std::string>{"tanh", "tanh", "tanh"}
+        std::vector<int>{10, 10, 10, 10, 10},
+        std::vector<std::string>{"sinusoid", "sinusoid", "sinusoid", "sinusoid", "sinusoid"}
     );
 
-    setSize(800, 300);
+    setSize(512, 512);
     startTimerHz(horizontalMeter.HZ);
 }
 
