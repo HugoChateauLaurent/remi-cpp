@@ -100,6 +100,12 @@ ReMiAudioProcessor::ReMiAudioProcessor()
                                                             0.0f,   // minimum value
                                                             1.0f,   // maximum value
                                                             0.0f)); // default value
+        addParameter (horizontalMirror_parameter = new juce::AudioParameterBool ("horizontalMirror", // parameterID
+                                                            "horizontalMirror", // parameter name
+                                                            false)); // default value
+        addParameter (verticalMirror_parameter = new juce::AudioParameterBool ("verticalMirror", // parameterID
+                                                            "verticalMirror", // parameter name
+                                                            false)); // default value
                                                             
                                                             
     }

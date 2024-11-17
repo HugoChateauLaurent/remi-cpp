@@ -84,6 +84,8 @@ public:
     juce::AudioParameterInt* display_time;
     juce::AudioParameterFloat* random1_parameter;
     juce::AudioParameterFloat* random2_parameter;
+    juce::AudioParameterBool* horizontalMirror_parameter;
+    juce::AudioParameterBool* verticalMirror_parameter;
 
     std::vector<double> randomVars = { 0.0, 0.0 };
     

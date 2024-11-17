@@ -121,7 +121,6 @@ void ReMiAudioProcessorEditor::timerCallback()
 
 void ReMiAudioProcessorEditor::generateAndApplyColors()
 {
-
     // Copy audioVars safely
     std::vector<double> audioVarsCopy;
     {
@@ -130,41 +129,173 @@ void ReMiAudioProcessorEditor::generateAndApplyColors()
     }
 
     std::vector<juce::Colour> colors;
-    colors.reserve(rows * cols);
+    colors.resize(rows * cols); // Pre-allocate space for all colors
 
     // Generate colors for the first half of the grid
-    for (int y = 0; y < rows / 2; ++y)
+    int halfRows = rows / 2;
+    int halfCols = cols / 2;
+
+    if (*audioProcessor.horizontalMirror_parameter)
     {
-        for (int x = 0; x < cols; ++x)
+        // Generate colors for the top half and mirror to the bottom half
+        for (int y = 0; y < halfRows; ++y)
         {
-            // Generate input features for the neural network
-            std::vector<double> features = generateInputFeatures(x, y, cols, rows, audioProcessor.audioVars);
+            for (int x = 0; x < cols; ++x)
+            {
+                // Generate input features for the neural network
+                std::vector<double> features = generateInputFeatures(x, y, cols, rows, audioVarsCopy);
 
-            // Initialize input_features
-            std::vector<std::vector<double>> input_features = { features };
+                // Initialize input_features
+                std::vector<std::vector<double>> input_features = { features };
 
-            // Forward pass through the neural network
-            auto output = color_net->forward(input_features);
+                // Forward pass through the neural network
+                auto output = color_net->forward(input_features);
 
-            // Remove green channel from output
-            output[0][1] = 0.0;
+                // Remove green channel from output
+                output[0][1] = 0.0;
 
-            // Convert output to RGB values (0-255)
-            uint8_t red = static_cast<uint8_t>(output[0][0] * 255);
-            uint8_t green = static_cast<uint8_t>(output[0][1] * 255);
-            uint8_t blue = static_cast<uint8_t>(output[0][2] * 255);
+                // Convert output to RGB values (0-255)
+                uint8_t red = static_cast<uint8_t>(output[0][0] * 255);
+                uint8_t green = static_cast<uint8_t>(output[0][1] * 255);
+                uint8_t blue = static_cast<uint8_t>(output[0][2] * 255);
 
-            colors.emplace_back(juce::Colour::fromRGB(red, green, blue));
+                juce::Colour color = juce::Colour::fromRGB(red, green, blue);
+
+                int index = y * cols + x;
+                colors[index] = color;
+
+                // Mirror to the bottom half
+                int mirroredY = rows - 1 - y;
+                int mirroredIndex = mirroredY * cols + x;
+                colors[mirroredIndex] = color;
+            }
+        }
+
+        // If rows is odd, process the middle row separately
+        if (rows % 2 != 0)
+        {
+            int middleY = halfRows;
+            for (int x = 0; x < cols; ++x)
+            {
+                // Generate input features for the neural network
+                std::vector<double> features = generateInputFeatures(x, middleY, cols, rows, audioVarsCopy);
+
+                // Initialize input_features
+                std::vector<std::vector<double>> input_features = { features };
+
+                // Forward pass through the neural network
+                auto output = color_net->forward(input_features);
+
+                // Remove green channel from output
+                output[0][1] = 0.0;
+
+                // Convert output to RGB values (0-255)
+                uint8_t red = static_cast<uint8_t>(output[0][0] * 255);
+                uint8_t green = static_cast<uint8_t>(output[0][1] * 255);
+                uint8_t blue = static_cast<uint8_t>(output[0][2] * 255);
+
+                juce::Colour color = juce::Colour::fromRGB(red, green, blue);
+
+                int index = middleY * cols + x;
+                colors[index] = color;
+            }
         }
     }
-
-    // Mirror the generated colors to fill the entire grid
-    for (int y = rows / 2; y < rows; ++y)
+    else if (*audioProcessor.verticalMirror_parameter)
     {
-        for (int x = 0; x < cols; ++x)
+        // Generate colors for the left half and mirror to the right half
+        for (int y = 0; y < rows; ++y)
         {
-            int mirrored_index = (rows - 1 - y) * cols + x;
-            colors.emplace_back(colors[mirrored_index]);
+            for (int x = 0; x < halfCols; ++x)
+            {
+                // Generate input features for the neural network
+                std::vector<double> features = generateInputFeatures(x, y, cols, rows, audioVarsCopy);
+
+                // Initialize input_features
+                std::vector<std::vector<double>> input_features = { features };
+
+                // Forward pass through the neural network
+                auto output = color_net->forward(input_features);
+
+                // Remove green channel from output
+                output[0][1] = 0.0;
+
+                // Convert output to RGB values (0-255)
+                uint8_t red = static_cast<uint8_t>(output[0][0] * 255);
+                uint8_t green = static_cast<uint8_t>(output[0][1] * 255);
+                uint8_t blue = static_cast<uint8_t>(output[0][2] * 255);
+
+                juce::Colour color = juce::Colour::fromRGB(red, green, blue);
+
+                int index = y * cols + x;
+                colors[index] = color;
+
+                // Mirror to the right half
+                int mirroredX = cols - 1 - x;
+                int mirroredIndex = y * cols + mirroredX;
+                colors[mirroredIndex] = color;
+            }
+        }
+
+        // If cols is odd, process the middle column separately
+        if (cols % 2 != 0)
+        {
+            int middleX = halfCols;
+            for (int y = 0; y < rows; ++y)
+            {
+                // Generate input features for the neural network
+                std::vector<double> features = generateInputFeatures(middleX, y, cols, rows, audioVarsCopy);
+
+                // Initialize input_features
+                std::vector<std::vector<double>> input_features = { features };
+
+                // Forward pass through the neural network
+                auto output = color_net->forward(input_features);
+
+                // Remove green channel from output
+                output[0][1] = 0.0;
+
+                // Convert output to RGB values (0-255)
+                uint8_t red = static_cast<uint8_t>(output[0][0] * 255);
+                uint8_t green = static_cast<uint8_t>(output[0][1] * 255);
+                uint8_t blue = static_cast<uint8_t>(output[0][2] * 255);
+
+                juce::Colour color = juce::Colour::fromRGB(red, green, blue);
+
+                int index = y * cols + middleX;
+                colors[index] = color;
+            }
+        }
+    }
+    else
+    {
+        // No symmetry, generate colors for the entire grid
+        for (int y = 0; y < rows; ++y)
+        {
+            for (int x = 0; x < cols; ++x)
+            {
+                // Generate input features for the neural network
+                std::vector<double> features = generateInputFeatures(x, y, cols, rows, audioVarsCopy);
+
+                // Initialize input_features
+                std::vector<std::vector<double>> input_features = { features };
+
+                // Forward pass through the neural network
+                auto output = color_net->forward(input_features);
+
+                // Remove green channel from output
+                output[0][1] = 0.0;
+
+                // Convert output to RGB values (0-255)
+                uint8_t red = static_cast<uint8_t>(output[0][0] * 255);
+                uint8_t green = static_cast<uint8_t>(output[0][1] * 255);
+                uint8_t blue = static_cast<uint8_t>(output[0][2] * 255);
+
+                juce::Colour color = juce::Colour::fromRGB(red, green, blue);
+
+                int index = y * cols + x;
+                colors[index] = color;
+            }
         }
     }
 
