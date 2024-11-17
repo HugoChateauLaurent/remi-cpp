@@ -34,3 +34,13 @@ inline std::vector<std::vector<double>> tanh_func(const std::vector<std::vector<
     }
     return output;
 }
+
+inline std::vector<std::vector<double>> sin_func(const std::vector<std::vector<double>>& x) {
+    std::vector<std::vector<double>> output = x;
+    for (auto& row : output) {
+        for (auto& val : row) {
+            val = std::sin(val);
+        }
+    }
+    return output;
+}

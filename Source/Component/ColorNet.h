@@ -70,7 +70,9 @@ public:
             activation_map = {
                 {"relu", relu},
                 {"sigmoid", sigmoid},
-                {"tanh", tanh_func}};
+                {"tanh", tanh_func},
+                {"sin", sin_func},
+            };
 
         int current_size = input_size;
 

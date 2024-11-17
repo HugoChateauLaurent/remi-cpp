@@ -66,8 +66,8 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
     // Initialize color_net using std::make_unique
     color_net = std::make_unique<ColorNet>(
         3 + num_random_vars,
-        std::vector<int>{7, 7, 7, 7},
-        std::vector<std::string>{"tanh", "tanh", "tanh", "tanh"}
+        std::vector<int>{10, 10, 10, 10, 10},
+        std::vector<std::string>{"sin", "sin", "sin", "sin", "sin"}
     );
 
     setSize(800, 300);
@@ -136,6 +136,9 @@ void ReMiAudioProcessorEditor::generateAndApplyColors()
 
             // Forward pass through the neural network
             auto output = color_net->forward(input_features);
+            
+            // Set the green component to zero for better visualization
+            output[0][1] = 0.0;
 
             // Convert output to RGB values (0-255)
             uint8_t red = static_cast<uint8_t>(output[0][0] * 255);

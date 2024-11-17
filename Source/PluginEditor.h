@@ -53,7 +53,7 @@ private:
 
     int rows;
     int cols;
-    int num_random_vars = 2;
+    int num_random_vars = 12;
     std::unique_ptr<ColorNet> color_net;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReMiAudioProcessorEditor)

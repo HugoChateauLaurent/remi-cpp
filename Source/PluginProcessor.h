@@ -94,7 +94,7 @@ public:
     juce::AudioParameterFloat* random11_parameter;
     juce::AudioParameterFloat* random12_parameter;
 
-    std::vector<double> randomVars = { 0.0, 0.0 };
+    std::vector<double> randomVars = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
     
     float currentVolume;
     int count = 0;
