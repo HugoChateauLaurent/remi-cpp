@@ -196,7 +196,7 @@ namespace Gui
 		}
 		
 		
-		double HZ = 86.0;
+		double HZ = 20.0;
         int maxDataPoints = 150; // Maximum number of data points to keep
         
 	private:
