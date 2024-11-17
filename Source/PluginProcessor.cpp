@@ -271,7 +271,6 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     reservoirFX.feedback_mix=*feedback_mix_parameter;
     reservoirFX.reservoir.sr=*spectral_radius_parameter;
     
-    
     for (auto i = 0; i < totalNumOutputChannels; ++i)
     {
         auto* channelData = buffer.getWritePointer(i);
@@ -280,6 +279,7 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
         {
             channelData[sample] = channelData[sample] * currentVolume; 
         }
+        audioVars[0] = 20 * std::log(buffer.getRMSLevel(0, channelData[0], buffer.getNumSamples())); // generate colours depending on buffer RMS in dB
     }
 
     std::ofstream logFile ("E:\\U-Bordeaux\\hackrob\\Remi\\log.csv", std::ios_base::app);

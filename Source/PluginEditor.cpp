@@ -129,7 +129,7 @@ void ReMiAudioProcessorEditor::generateAndApplyColors()
         for (int x = 0; x < cols; ++x)
         {
             // Generate input features for the neural network
-            std::vector<double> features = generateInputFeatures(x, y, cols, rows, audioProcessor.randomVars);
+            std::vector<double> features = generateInputFeatures(x, y, cols, rows, audioProcessor.audioVars);
 
             // Initialize input_features
             std::vector<std::vector<double>> input_features = { features };
