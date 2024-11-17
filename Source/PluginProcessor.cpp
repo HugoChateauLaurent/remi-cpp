@@ -99,6 +99,65 @@ ReMiAudioProcessor::ReMiAudioProcessor()
                                                             0.0f,   // minimum value
                                                             1.0f,   // maximum value
                                                             0.0f)); // default value
+        addParameter (random3_parameter = new juce::AudioParameterFloat ("random3", // parameterID
+                                                            "random3", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+        addParameter (random4_parameter = new juce::AudioParameterFloat ("random4", // parameterID
+                                                            "random4", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+                                                            
+        addParameter (random5_parameter = new juce::AudioParameterFloat ("random5", // parameterID
+                                                            "random5", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+                                                            
+        addParameter (random6_parameter = new juce::AudioParameterFloat ("random6", // parameterID
+                                                            "random6", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+                                                            
+        addParameter (random7_parameter = new juce::AudioParameterFloat ("random7", // parameterID
+                                                            "random7", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+                                                            
+        addParameter (random8_parameter = new juce::AudioParameterFloat ("random8", // parameterID
+                                                            "random8", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+                                                            
+        addParameter (random9_parameter = new juce::AudioParameterFloat ("random9", // parameterID
+                                                            "random9", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+                                                            
+        addParameter (random10_parameter = new juce::AudioParameterFloat ("random10", // parameterID
+                                                            "random10", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+                                                            
+        addParameter (random11_parameter = new juce::AudioParameterFloat ("random11", // parameterID
+                                                            "random11", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+                                                            
+        addParameter (random12_parameter = new juce::AudioParameterFloat ("random12", // parameterID
+                                                            "random12", // parameter name
+                                                            0.0f,   // minimum value
+                                                            1.0f,   // maximum value
+                                                            0.0f)); // default value
+
                                                             
                                                             
     }
@@ -289,6 +348,16 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     // Set randomVars from random1 and random2 parameters
     randomVars[0] = *random1_parameter;
     randomVars[1] = *random2_parameter;
+    randomVars[2] = *random3_parameter;
+    randomVars[3] = *random4_parameter;
+    randomVars[4] = *random5_parameter;
+    randomVars[5] = *random6_parameter;
+    randomVars[6] = *random7_parameter;
+    randomVars[7] = *random8_parameter;
+    randomVars[8] = *random9_parameter;
+    randomVars[9] = *random10_parameter;
+    randomVars[10] = *random11_parameter;
+    randomVars[11] = *random12_parameter;
 
 }
 

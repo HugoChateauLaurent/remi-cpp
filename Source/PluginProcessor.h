@@ -83,6 +83,16 @@ public:
     juce::AudioParameterInt* display_time;
     juce::AudioParameterFloat* random1_parameter;
     juce::AudioParameterFloat* random2_parameter;
+    juce::AudioParameterFloat* random3_parameter;
+    juce::AudioParameterFloat* random4_parameter;
+    juce::AudioParameterFloat* random5_parameter;
+    juce::AudioParameterFloat* random6_parameter;
+    juce::AudioParameterFloat* random7_parameter;
+    juce::AudioParameterFloat* random8_parameter;
+    juce::AudioParameterFloat* random9_parameter;
+    juce::AudioParameterFloat* random10_parameter;
+    juce::AudioParameterFloat* random11_parameter;
+    juce::AudioParameterFloat* random12_parameter;
 
     std::vector<double> randomVars = { 0.0, 0.0 };
     
