@@ -10,8 +10,9 @@
 
 #include <JuceHeader.h>
 #include "ReservoirAudioFX.h"
-#include <mutex>
 
+#include <array>
+#include <mutex>
 //==============================================================================
 /**
 */
@@ -85,10 +86,27 @@ public:
     juce::AudioParameterFloat* random2_parameter;
 
     std::vector<double> randomVars = { 0.0, 0.0 };
-    std::vector<double> audioVars = { 0.0, 0.0 };
     
     float currentVolume;
     int count = 0;
+
+    // Number of frequency bands
+    static constexpr int numBands = 6; // Replace N with the desired number of bands (e.g., 3)
+
+    // Bandpass filters for each band
+    std::array<juce::IIRFilter, numBands> bandFilters;
+
+    // Integrated sums for each band
+    std::array<float, numBands> bandSums = {};
+
+    // Gain factors for each band
+    std::array<float, numBands> bandGains = {};
+
+    // Mutex for thread safety
+    std::mutex bandMutex;
+
+    // Variables to pass to the neural network
+    std::vector<double> audioVars = std::vector<double>(numBands, 0.0f);
 
 private:
     //==============================================================================

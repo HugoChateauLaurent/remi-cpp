@@ -121,6 +121,14 @@ void ReMiAudioProcessorEditor::timerCallback()
 
 void ReMiAudioProcessorEditor::generateAndApplyColors()
 {
+
+    // Copy audioVars safely
+    std::vector<double> audioVarsCopy;
+    {
+        std::lock_guard<std::mutex> lock(audioProcessor.bandMutex);
+        audioVarsCopy = audioProcessor.audioVars;
+    }
+
     std::vector<juce::Colour> colors;
     colors.reserve(rows * cols);
 

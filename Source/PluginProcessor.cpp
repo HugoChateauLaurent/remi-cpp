@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream> 
 #include "Component/FeatureGenerator.h"
+#include <cmath>
 
 
 
@@ -189,7 +190,31 @@ void ReMiAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     time = 0;
     rateValue = static_cast<float>(sampleRate); // Initialize rateValue with sampleRate
  
+    // Define the frequency ranges for each band (Hz)
+    // Example for 3 bands: [20 Hz, 200 Hz, 2000 Hz, 20000 Hz]
+    const float frequencies[numBands + 1] = {20.0f, 200.0f, 2000.0f, 20000.0f};
 
+    for (int i = 0; i < numBands; ++i)
+    {
+        float lowFreq = frequencies[i];
+        float highFreq = frequencies[i + 1];
+
+        // Design a bandpass filter for the frequency range
+        juce::IIRCoefficients coeffs = juce::IIRCoefficients::makeBandPass(
+            sampleRate,
+            (lowFreq + highFreq) / 2.0f,                // Center frequency
+            (highFreq - lowFreq) / ((lowFreq + highFreq) / 2.0f) // Q factor
+        );
+        bandFilters[i].setCoefficients(coeffs);
+        bandFilters[i].reset(); // Reset filter state
+    }
+
+    // Initialize band gains
+    float gain = 0.1f; // Adjust gain to control integration speed
+    bandGains.fill(gain);
+
+    // Initialize band sums to zero
+    bandSums.fill(0.0f);
     
 
 }
@@ -259,10 +284,7 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
         currentVolume = juce::jlimit(0.0f, 1.0f, currentVolume); // Ensure currentVolume is between 0 and 1
      
     }
-
-
-
-    juce::ScopedNoDenormals noDenormals;
+    
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     reservoirFX.reservoir.input_scaling=*input_scaling_parameter;
@@ -271,7 +293,6 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     reservoirFX.feedback_mix=*feedback_mix_parameter;
     reservoirFX.reservoir.sr=*spectral_radius_parameter;
     
-    // audioVars.reserve(1);
     for (auto i = 0; i < totalNumOutputChannels; ++i)
     {
         auto* channelData = buffer.getWritePointer(i);
@@ -280,12 +301,59 @@ void ReMiAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
         {
             channelData[sample] = channelData[sample] * currentVolume; 
         }
-        audioVars[0] = 20 * std::log(buffer.getRMSLevel(0, channelData[0], buffer.getNumSamples())); // generate colours depending on buffer RMS in dB
     }
 
-    // // Apply smoothing (simple exponential moving average)
-    // float smoothingFactor = 0.1f; // Adjust between 0.0f and 1.0f
-    // audioVars[0] = smoothingFactor * newAudioVar + (1.0f - smoothingFactor) * audioVars[0];
+    // Process each band
+    for (int band = 0; band < numBands; ++band)
+    {
+        // Create a temporary buffer to hold the filtered signal
+        juce::AudioBuffer<float> bandBuffer;
+        bandBuffer.makeCopyOf(buffer);
+
+        // Process the bandBuffer with the bandpass filter
+        for (int channel = 0; channel < bandBuffer.getNumChannels(); ++channel)
+        {
+            bandFilters[band].processSamples(bandBuffer.getWritePointer(channel), bandBuffer.getNumSamples());
+        }
+
+        // Compute the RMS level of the filtered signal
+        float rmsLevel = 0.0f;
+        for (int channel = 0; channel < bandBuffer.getNumChannels(); ++channel)
+        {
+            rmsLevel += bandBuffer.getRMSLevel(channel, 0, bandBuffer.getNumSamples());
+        }
+        rmsLevel /= static_cast<float>(bandBuffer.getNumChannels()); // Average across channels
+
+        // Ensure the level is positive
+        rmsLevel = std::max(0.0f, rmsLevel);
+
+        // Integrate by summing with gain control
+        {
+            std::lock_guard<std::mutex> lock(bandMutex);
+            bandSums[band] += rmsLevel * bandGains[band];
+        }
+    }
+
+    // Apply sinusoid and update audioVars
+    {
+        std::lock_guard<std::mutex> lock(bandMutex);
+
+        for (int i = 0; i < numBands; ++i)
+        {
+            float sum = bandSums[i];
+
+            // Apply modulo to prevent unlimited growth
+            sum = std::fmod(sum, juce::MathConstants<float>::twoPi);
+
+            // Apply sinusoid function
+            float sinusoidValue = std::sin(sum);
+
+            // Optionally normalize the sinusoidValue to [0, 1]
+            float normalizedValue = (sinusoidValue + 1.0f) / 2.0f;
+
+            audioVars[i] = normalizedValue;
+        }
+    }
 
     std::ofstream logFile ("E:\\U-Bordeaux\\hackrob\\Remi\\log.csv", std::ios_base::app);
     logFile << currentVolume << "\n";
