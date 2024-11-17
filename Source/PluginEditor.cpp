@@ -70,7 +70,7 @@ ReMiAudioProcessorEditor::ReMiAudioProcessorEditor (ReMiAudioProcessor& p)
         std::vector<std::string>{"sinusoid", "sinusoid", "sinusoid", "sinusoid", "sinusoid"}
     );
 
-    setSize(512, 512);
+    setSize(300, 300);
     startTimerHz(horizontalMeter.HZ);
 }
 
